@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from newcomer_qa.client import ChatRequest, Mode, RecordingClient
 from newcomer_qa.config import Settings
-from newcomer_qa.evaluate import EvalConfig, Grade, Response, gold_target, load_test_cases
+from newcomer_qa.evaluate import EvalConfig, Response, gold_target, load_grades, load_test_cases
 
 TRANSLATE_PROMPT = "Translate into English. Reply with the translation only.\n\n{text}"
 
@@ -20,15 +20,6 @@ class SampleItem(BaseModel):
     gold: str
     response: str
     translation: dict[str, str] | None
-
-
-class HumanGrade(BaseModel):
-    key: str
-    grade: Grade
-
-
-def response_key(response: Response) -> str:
-    return f"{response.model}/{response.condition}/{response.item_id}"
 
 
 def sample(responses: list[Response], share: float, seed: int) -> list[Response]:
@@ -66,7 +57,7 @@ def write_human_page(settings: Settings, mode: Mode) -> Path:
         case = cases[response.item_id]
         fields = {"question": case.question, "gold": gold_target(case), "response": response.response}
         translation = {k: translate(v) for k, v in fields.items()} if case.lang in settings.translate_for_review else None
-        return SampleItem(key=response_key(response), lang=case.lang, translation=translation, **fields)
+        return SampleItem(key=response.key, lang=case.lang, translation=translation, **fields)
 
     with ThreadPoolExecutor(max_workers=settings.concurrency) as pool:
         items = list(pool.map(item, picked))
@@ -86,17 +77,9 @@ def cohen_kappa(pairs: list[tuple[str, str]]) -> float:
     return (observed - expected) / (1 - expected) if expected < 1 else 1.0
 
 
-def _load_grades(path: Path) -> dict[str, Grade]:
-    with path.open(encoding="utf-8") as f:
-        return {g.key: g.grade for g in (HumanGrade.model_validate_json(line) for line in f if line.strip())}
-
-
-def reference_grades(settings: Settings) -> dict[str, dict[str, Grade]]:
-    """Grader name -> response key -> grade, for the human check and each independent AI grader."""
-    graders = {"human": _load_grades(settings.human_grades)} if settings.human_grades.exists() else {}
-    for path in sorted(settings.ai_grades_dir.glob("*.jsonl")):
-        graders[path.stem] = _load_grades(path)
-    return graders
+def reference_grades(settings: Settings) -> dict[str, dict[str, str]]:
+    """Grader name -> response key -> grade, for every committed grade file (AI graders, a human check)."""
+    return {path.stem: load_grades(path) for path in sorted(settings.grades_dir.glob("*.jsonl"))}
 
 
 def _compare(first: dict[str, str], second: dict[str, str]) -> dict:
@@ -111,7 +94,7 @@ def _compare(first: dict[str, str], second: dict[str, str]) -> dict:
 
 def agreement(settings: Settings, responses: list[Response]) -> dict[str, dict]:
     """Agreement of the judge with every reference grader, and of the reference graders with each other."""
-    judge = {response_key(r): r.grade or "ungraded" for r in responses}
+    judge = {r.key: r.judge_grade or "ungraded" for r in responses}
     graders = reference_grades(settings)
     comparisons = {f"judge vs {name}": _compare(judge, grades) for name, grades in graders.items()}
     names = list(graders)

@@ -3,7 +3,7 @@ import argparse
 from newcomer_qa.build import build_dataset
 from newcomer_qa.config import Settings
 from newcomer_qa.consensus import consensus
-from newcomer_qa.evaluate import evaluate
+from newcomer_qa.evaluate import EvalConfig, evaluate
 from newcomer_qa.fetch import fetch
 from newcomer_qa.generate import generate
 from newcomer_qa.human import agreement, write_human_page
@@ -39,7 +39,8 @@ def main() -> None:
         build_dataset(settings)
     elif args.command == "evaluate":
         responses = evaluate(settings, args.mode)
-        path = write_scores(responses, settings.results_dir, args.update, agreement(settings, responses))
+        primary = EvalConfig.load(settings.eval_config).primary_grader
+        path = write_scores(responses, settings.results_dir, args.update, primary, agreement(settings, responses))
         print((path.parent / "summary.md").read_text(encoding="utf-8"))
     elif args.command == "human-page":
         print(f"wrote {write_human_page(settings, args.mode)}")

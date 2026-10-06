@@ -36,6 +36,8 @@ class EvalConfig(BaseModel):
     main_condition: str
     answer: Sampling
     judge: Judge
+    # Grades in data/grades/<primary_grader>.jsonl are the headline; the judge above is the in-harness comparison.
+    primary_grader: str
 
     @model_validator(mode="after")
     def _main_condition_is_listed(self) -> "EvalConfig":
@@ -56,8 +58,14 @@ class Response(BaseModel):
     model: str
     condition: str
     response: str
+    # From the primary grader's committed grades; None for a response it has not graded yet.
     grade: Grade | None
+    judge_grade: Grade | None
     judge_output: str
+
+    @property
+    def key(self) -> str:
+        return f"{self.model}/{self.condition}/{self.item_id}"
 
 
 def load_test_cases(path: Path) -> list[TestCase]:
@@ -76,11 +84,24 @@ def parse_grade(text: str) -> Grade | None:
     return GRADE_LETTERS[match.group(1)] if match else None
 
 
+class GradeRecord(BaseModel):
+    key: str
+    grade: Grade
+
+
+def load_grades(path: Path) -> dict[str, Grade]:
+    if not path.exists():
+        return {}
+    with path.open(encoding="utf-8") as f:
+        return {g.key: g.grade for g in (GradeRecord.model_validate_json(line) for line in f if line.strip())}
+
+
 def evaluate(settings: Settings, mode: Mode) -> list[Response]:
     config = EvalConfig.load(settings.eval_config)
     client = RecordingClient(settings.model_copy(update={"llm_base_url": config.endpoint}), settings.recordings_dir, mode)
     grader = settings.grader_prompt.read_text(encoding="utf-8")
     cases = load_test_cases(settings.dataset_dir / "test_cases.jsonl")
+    primary = load_grades(settings.grades_dir / f"{config.primary_grader}.jsonl")
 
     def respond(job: tuple[str, str, TestCase]) -> Response:
         name, condition, case = job
@@ -102,6 +123,7 @@ def evaluate(settings: Settings, mode: Mode) -> list[Response]:
                 max_tokens=config.judge.max_tokens,
             )
         ).content
+        key = f"{name}/{condition}/{case.item_id}"
         return Response(
             item_id=case.item_id,
             lang=case.lang,
@@ -109,7 +131,8 @@ def evaluate(settings: Settings, mode: Mode) -> list[Response]:
             model=name,
             condition=condition,
             response=answer,
-            grade=parse_grade(verdict),
+            grade=primary.get(key),
+            judge_grade=parse_grade(verdict),
             judge_output=verdict,
         )
 
@@ -119,4 +142,7 @@ def evaluate(settings: Settings, mode: Mode) -> list[Response]:
     settings.responses.parent.mkdir(parents=True, exist_ok=True)
     with settings.responses.open("w", encoding="utf-8") as f:
         f.writelines(json.dumps(r.model_dump(), ensure_ascii=False) + "\n" for r in responses)
+    ungraded = sum(r.grade is None for r in responses)
+    if ungraded:
+        print(f"{ungraded} responses have no {config.primary_grader} grade yet; see the judge_grade columns")
     return responses

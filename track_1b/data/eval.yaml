@@ -19,8 +19,12 @@ main_condition: swiss_context
 answer:
   temperature: 0.0
   max_tokens: 512
-# The CSCS key serves only Apertus models, so the judge is the larger Apertus; a human checks a random 20%.
+# The CSCS key serves only Apertus models, so the in-harness judge is the larger Apertus.
 judge:
   model: swiss-ai/Apertus-v1.5-70B
   temperature: 0.0
   max_tokens: 16
+# The Apertus judge accepted answers that contradict the gold target (kappa about 0.5 against two Claude graders,
+# which agree with each other at 0.89), so the headline grades come from Claude Opus 5.5, graded offline with the same
+# SimpleQA rules on blinded items and committed to data/grades/. The harness has no Claude API key.
+primary_grader: claude-opus-5-5
