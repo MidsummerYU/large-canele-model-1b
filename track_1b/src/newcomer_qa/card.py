@@ -81,6 +81,8 @@ def card_context(settings: Settings) -> dict:
         "results": _results(scores, "scores"),
         "judge_results": _results(scores, "judge_scores"),
         "agreement": _agreement(scores),
+        "a": scores["grader_agreement"],
+        "hf_repo": settings.hf_repo,
         "s": scores["scores"],
         "j": scores["judge_scores"],
     }

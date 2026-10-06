@@ -56,6 +56,13 @@ class Settings(BaseSettings):
     card: Path = TRACK_DIR / "docs" / "dataset_card.md"
     # Folder uploaded to the Hugging Face dataset repository; rebuilt by `make hf`, not committed.
     hf_dir: Path = TRACK_DIR / "hf"
+    hf_repo: str = "MidsummerYU/swiss-newcomer-qa"
+    figures_dir: Path = TRACK_DIR / "docs" / "figures"
+    report_template: Path = TRACK_DIR / "docs" / "technical_report.template.md"
+    report_path: Path = TRACK_DIR / "technical_report.md"
+    report_pdf: Path = TRACK_DIR / "LargeCaneleModel_Report.pdf"
+    # Only `newcomer-qa report-pdf` needs it; override with CHROME on other systems.
+    chrome: Path = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
     source_publisher: str = "ch.ch, Swiss Federal Chancellery (source of facts only; no text reproduced)"
     max_copied_words: int = 8
     # Languages the reviewer does not read: the review sheet adds an English translation for these.

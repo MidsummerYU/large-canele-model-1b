@@ -1,62 +1,136 @@
-# Technical report — `project name`
+# Technical report — Swiss Newcomer QA: do Apertus models know the rules newcomers must follow?
 
-> Three sentence summary: The use case, your dataset, and your key evaluation results.
+> People who move to Switzerland must register, insure themselves and apply for permits within short deadlines, and increasingly ask chatbots how. We built 329 closed-book questions in German, French, Italian and English from the official portal ch.ch, each with accepted answers and a source, and graded Apertus 1.5 with SimpleQA. Even when told the user lives in Switzerland, Apertus 1.5 70B answers 39% of the questions wrongly and declines only 5%; grading itself, it would report 13%.
 
-**Track:** Apertus Readiness  - Track 1B  
+**Track:** Apertus Readiness - Track 1B (Swiss Voices, core task intelligence)  
 **Event:** Online  
-**Team:** `team name` — `member`, `member`, `member`  
-**Demo:** `link to video, deployment, or notebook`  
+**Team:** Large Canelé Model — Yumeng Ye  
+**Demo:** `make run` replays every model call and rebuilds the scores, figures, dataset card and this report; dataset: https://huggingface.co/datasets/MidsummerYU/swiss-newcomer-qa
 
 ----
 
 ### Use of Apertus
 
-- **Model:** `e.g. swiss-ai/Apertus-v1.5-70B`
-- **How it is used:** inference | fine-tuning | evaluation | red-teaming
-- **Where it runs:** `local weights, hosted endpoint, ...`
+- **Model:** `swiss-ai/Apertus-v1.5-8B` and `swiss-ai/Apertus-v1.5-70B`
+- **How it is used:** evaluation (closed-book answers), dataset drafting (swiss-ai/Apertus-v1.5-70B wrote the candidate questions) and an in-harness judge
+- **Where it runs:** hosted endpoint, CSCS Inference Service (`https://api.inference.cscs.ch/v1`), chat completions, server-side chat template, no system prompt
+- **Other models:** Claude Opus 5.5, Sonnet 5.5 and Fable 5.1 (Anthropic) reviewed and adjudicated the candidates and graded the answers (Opus: primary grades). Claude also assisted with the code and with drafting this text; the team reviewed it.
 
 ----
+
 ## Use Case Description
 
-Why the dataset was collected, the use case that it evaluates and why this use case matters.
+A newcomer to Switzerland must register with the commune soon after arriving, take out health insurance within three months, and understand residence permits, the AHV/AVS pension system and withholding tax, often before speaking a national language well. ch.ch, run by the Federal Chancellery with the cantons, explains these rules in German, French, Italian and English. An assistant built on a Swiss model should give the same correct rules in all four languages, and should say when it does not know instead of inventing a deadline or an amount. The dataset measures exactly that: correct, incorrect and not-attempted answers to the questions a newcomer asks, per language and topic.
 
 ## Dataset Summary
 
-Clear specifications for the dataset. Description of what makes it representative for the use case. Descriptive statistics of the dataset across variables of interest.
+Each item is a single-turn question with one short factual answer (deadline, amount, age, number, office, document or yes/no) that holds everywhere in Switzerland, is stated explicitly on the cited ch.ch page, and is written in the page's language in our own words. The 329 items cover 6 topics and come from 68 pages (one seed page per subject plus its official French, Italian and English versions), so every language has its own questions about the same procedures:
+
+| topic | de | en | fr | it | all |
+|---|---|---|---|---|---|
+| health_insurance | 14 | 15 | 15 | 14 | 58 |
+| naturalisation | 8 | 8 | 7 | 7 | 30 |
+| pension | 26 | 22 | 20 | 22 | 90 |
+| registration | 5 | 7 | 6 | 7 | 25 |
+| residence_permit | 21 | 23 | 22 | 24 | 90 |
+| withholding_tax | 8 | 9 | 10 | 9 | 36 |
+| **all** | 82 | 84 | 80 | 83 | **329** |
+
+Items list 2.8 accepted answers on average (wording, units and number formats); 10 are tagged `dated` because the amount is revised over time. Metadata give each item's source URL, the page's modification date, the date it was checked (2026-10-06), the review votes and the licence.
 
 ## Data Collection Method
 
-Motivation of design choices. Description of the data collection, curation and cleaning methods, the annotation method for ground truth labels and if relevant, instructions provided to annotators for creating the ground truth and annotating LLM responses.
+1. **Fetch and draft.** We fetched the pages (2026-10-06) and asked swiss-ai/Apertus-v1.5-70B (temperature 0.0) for up to 10 questions per page, each with an answer, variants and the passage it relies on. Page text stays local: ch.ch content may not be republished.
+2. **Three blind AI reviews.** Claude Fable 5.1, Claude Opus 5.5, Claude Sonnet 5.5 each judged all 387 candidates as keep, edit or drop against our annotation guidelines (`docs/annotation-guidelines.md`: a newcomer would ask it, it stands alone, one short answer, stated explicitly in the passage, valid in every canton, every variant correct on its own). The drafting model never reviews. Agreement: Fleiss' kappa 0.642.
+3. **Outcome rule and adjudication.** Unanimous keep: kept (168); majority drop: removed (54); everything else (165) went to Claude Opus 5.5, which re-checked the passage and wrote the final item (157 edited, 4 kept, 4 dropped), so that one reviewer who spots an error is not outvoted.
+4. **Automatic checks.** The question must be in its page's language (py3langid) and must not copy 8 or more consecutive words from the passage; 19 questions were reworded.
 
-If data was collected from human subjects or contains sensitive or personally identifiable information, the method for obtaining consent must be clearly described.
+No human reviewed the items one by one, and no people took part as subjects; no consent was required. A consent form for future human graders is in `docs/annotator-consent-template.md`. Every vote and outcome, including the dropped candidates, is published in `review_log.jsonl`.
 
 ## Dataset Details
 
-All relevant details related to dataset quality, ethics, licensing and legal considerations. 
+- **Hugging Face:** https://huggingface.co/datasets/MidsummerYU/swiss-newcomer-qa (card generated from the data, `docs/dataset_card.md`)
+- **Licence:** questions, answers, metadata, responses and grades under CDLA-Permissive-2.0; each metadata line carries its licence.
+- **Copyright of the source:** ch.ch text is © Swiss Federal Chancellery and is not reproduced; we publish facts, our own wording and links. The copy check above enforces this.
+- **Personal data:** none; the items describe procedures, not people.
+- **Files:** `test_cases.jsonl` (items), `responses.jsonl` (model responses with grades), `metadata.jsonl`, `review_log.jsonl`; the dataset card (`docs/dataset_card.md`, generated from the data) documents every field.
+- **Versioning:** the Git commit of this report fixes the dataset, the recordings and the grades.
 
 ## Evaluation
 
 ### Method
-Evaluation method clearly described.
+
+Every item is asked closed-book to both models in two conditions: **swiss_context** puts "I live in Switzerland." (in the item's language) before the question, as a newcomer would; **as_asked** asks the bare question. Many questions do not name the country, and without the sentence the models often answer for another country, especially in English.
+
+Answers are graded with SimpleQA's three-way scheme (correct / incorrect / not attempted) and its unchanged grader prompt, and we report SimpleQA's metrics: the three rates, accuracy given attempted and F1. Our first grader was Apertus 70B, the only judge on the endpoint. To check it without a human annotator, Claude Opus 5.5 and Sonnet 5.5 graded the same seeded 20% sample blind (ids hidden, no model names):
+
+| comparison | n | agreement | Cohen's kappa |
+|---|---|---|---|
+| judge vs claude-opus-5-5 | 1316 | 71.7% | 0.541 |
+| judge vs claude-sonnet-5-5 | 132 | 72.0% | 0.528 |
+| claude-opus-5-5 vs claude-sonnet-5-5 | 132 | 93.2% | 0.885 |
+
+The two Claude graders agree with each other (kappa 0.89 on the sample) far more than with the Apertus judge, which accepted answers that contradict the reference (for example "10 years" for "5 years", ages 10–20 for 8–18). The headline grades are therefore claude-opus-5-5's, applied to all responses; the Apertus judge's grades stay in the dataset for comparison and for models we have not graded offline.
 
 ### Evaluation setup and inference parameters
-Setup instructions and parameters for reproducing evaluation results clearly described.
+
+Answers: temperature 0.0, at most 512 tokens, one sample per item and condition. Apertus judge: swiss-ai/Apertus-v1.5-70B, temperature 0.0, 16 tokens. All calls are recorded with their parameters and replayed by `make run`.
 
 ### Results
-Evaluation results clearly presented.
+
+![SimpleQA outcomes by model and condition](docs/figures/outcomes.svg)
+
+*Figure 1. Share of correct, incorrect and not-attempted answers, graded by claude-opus-5-5.*
+
+| model/condition | correct | incorrect | not attempted | correct given attempted | F1 |
+|---|---|---|---|---|---|
+| 8B/swiss_context | 41.6% | 48.0% | 10.3% | 46.4% | 0.439 |
+| 70B/swiss_context | 55.6% | 38.9% | 5.5% | 58.8% | 0.572 |
+| 8B/as_asked | 38.0% | 46.2% | 15.8% | 45.1% | 0.413 |
+| 70B/as_asked | 46.2% | 44.1% | 9.7% | 51.2% | 0.486 |
+
+Both models answer wrongly far more often than they decline: with the country stated, the 70B model is wrong on 39% of the items and declines 5%; the 8B model is wrong on 48%. For a newcomer, a confident wrong deadline is worse than "I don't know".
+
+![Effect of stating the country](docs/figures/context_effect.svg)
+
+*Figure 2. Correct answers per language with and without "I live in Switzerland."*
+
+Stating the country helps the 70B model most in English, from 42% to 60% correct: asked in German or French, it already assumes Switzerland; asked in English, it does not. The 8B model changes less and not in the same direction in every language (English even drops), so most of its errors are missing knowledge rather than a wrong country.
+
+![Apertus judge versus primary grader](docs/figures/judge_leniency.svg)
+
+*Figure 3. Incorrect answers per language as graded by claude-opus-5-5 and by the Apertus 70B judge.*
+
+Graded by itself, Apertus would look much better: the judge reports 13% incorrect for the 70B model instead of 39%. The gap is not the same in every language: in German the judge reports 11% incorrect where claude-opus-5-5 finds 45%, in English 17% against 37%. With the Apertus judge, German would look like the model's strongest language; with claude-opus-5-5 it is its weakest, so per-language comparisons made with a self-judge are misleading.
 
 ## Dataset Limitations
 
+- **AI-only curation and grading.** Models drafted, reviewed, adjudicated and graded the items; the agreement figures bound but do not remove shared errors. There is no human judge–grader agreement.
+- **Closed-model primary grader.** Results for new models need either the same offline grading or the Apertus judge with the bias shown above.
+- **Coverage.** 6 topics, national rules only (cantonal answers excluded), no Romansh or Swiss German, one snapshot of the rules (2026-10-06).
+- **Contamination.** ch.ch is public and likely in Apertus's training crawl; the questions are new text but the facts are not, so the set measures recall of official public information.
+- **Generator bias.** Apertus drafted the questions; the reviewers and the primary grader are a different model family.
+
 ## Lessons Learnt and Recommendations
 
-How you would improve the dataset. What insights the dataset presents on how the model can be improved for your use case.
+- **Do not let the model grade itself.** The Apertus judge put the 70B model's error rate at 13% instead of 39%; a second, independent grader on a sample is cheap and changes the conclusion.
+- **State the context the user has.** Without "I live in Switzerland" the benchmark partly measures which country the model assumes, which differs by language.
+- **Next for the dataset:** cantonal and false-premise items (where the right answer is "it depends on your canton" or a correction), a human check of a sample of grades, and a dated re-fetch to track rule changes.
+- **For Apertus:** prefer "I don't know" or a pointer to the competent office over a guessed figure; in a Swiss deployment, assume Swiss rules in English as it already does in German and French; align with ch.ch-style official information, which is freely readable.
 
 ## Reproducibility
 
-What a judge needs to get your numbers back: hardware, runtime, seeds, and the exact commit. `make run` should do the rest.
+- **Run:** `make run` from `track_1b/` (Docker, no API key, CPU only). It replays the recorded calls in `data/recordings/`, recomputes every score from `data/dataset/responses.jsonl` and the committed grades, **fails if the result differs from `results/scores.json`**, and rewrites the dataset card, the figures and this report. `make test` runs the tests.
+- **New model:** add it to `models` in `data/eval.yaml` and run `make evaluate` with `LLM_API_KEY` in `.env`; its answers are recorded and graded by the Apertus judge, and can be graded offline with the same SimpleQA rules for headline numbers.
+- **Determinism:** answers and judge use temperature 0 and are replayed exactly; the dataset build (`make build-dataset`) needs the local page text, which is not redistributed.
 
 ## License
 
-Creative Commons Attribution 4.0 (CC-BY-4.0). All HackApertus projects are open-sourced.
+Creative Commons Attribution 4.0 (CC-BY-4.0). Code: Apache-2.0. Dataset: CDLA-Permissive-2.0.
 
 ## References
+
+- Wei et al., *Measuring short-form factuality in large language models* (SimpleQA), 2024. https://arxiv.org/abs/2411.04368; grader prompt from https://github.com/openai/simple-evals (MIT).
+- ch.ch, the Swiss authorities online. https://www.ch.ch
+- Fleiss, *Measuring nominal scale agreement among many raters*, Psychological Bulletin, 1971.
+- Cohen, *A coefficient of agreement for nominal scales*, Educational and Psychological Measurement, 1960.

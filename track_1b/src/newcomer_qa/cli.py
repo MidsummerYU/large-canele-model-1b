@@ -7,9 +7,12 @@ from newcomer_qa.consensus import consensus
 from newcomer_qa.evaluate import EvalConfig, evaluate
 from newcomer_qa.fetch import fetch
 from newcomer_qa.generate import generate
+from newcomer_qa.figures import write_figures
 from newcomer_qa.human import agreement, write_human_page
+from newcomer_qa.pdf import build_pdf, page_count
 from newcomer_qa.review import review_sheet
 from newcomer_qa.score import write_scores
+from newcomer_qa.technical_report import write_report
 
 
 def main() -> None:
@@ -25,6 +28,7 @@ def main() -> None:
     evaluate_parser.add_argument("--update", action="store_true", help="overwrite results/scores.json instead of checking it")
     human_parser = commands.add_parser("human-page", help="write the blind judge-check page for a random 20% sample")
     human_parser.add_argument("--mode", choices=["live", "replay"], default="replay", help="live translates new items")
+    commands.add_parser("report-pdf", help="print technical_report.md to the submission PDF with headless Chrome")
     commands.add_parser("package-hf", help="write hf/: the dataset card as README.md and the data files to upload")
     args = parser.parse_args()
 
@@ -41,10 +45,15 @@ def main() -> None:
         build_dataset(settings)
     elif args.command == "evaluate":
         responses = evaluate(settings, args.mode)
-        primary = EvalConfig.load(settings.eval_config).primary_grader
-        path = write_scores(responses, settings.results_dir, args.update, primary, agreement(settings, responses))
+        config = EvalConfig.load(settings.eval_config)
+        path = write_scores(responses, settings.results_dir, args.update, config.primary_grader, agreement(settings, responses))
         print((path.parent / "summary.md").read_text(encoding="utf-8"))
-        print(f"wrote {write_card(settings)}")
+        figures = write_figures(path, list(config.models), list(config.conditions), config.main_condition, settings.figures_dir)
+        for written in [write_card(settings), *figures, write_report(settings)]:
+            print(f"wrote {written.relative_to(settings.report_path.parent)}")
+    elif args.command == "report-pdf":
+        pdf = build_pdf(settings)
+        print(f"wrote {pdf.name} ({page_count(pdf)} pages)")
     elif args.command == "package-hf":
         print(f"wrote {package_hf(settings)}")
     elif args.command == "human-page":

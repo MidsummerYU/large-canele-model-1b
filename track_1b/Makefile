@@ -1,4 +1,4 @@
-.PHONY: run image fetch generate review-sheet consensus build-dataset evaluate human-page hf test
+.PHONY: run image fetch generate review-sheet consensus build-dataset evaluate human-page hf report test
 
 IMAGE := newcomer-qa
 # The checkout is mounted at /app, so the results are written back to it as the host user, not root.
@@ -38,3 +38,7 @@ hf:
 
 test: image
 	$(DOCKER_RUN) --entrypoint /opt/venv/bin/pytest $(IMAGE) -q -p no:cacheprovider
+
+# Prints technical_report.md to the submission PDF; runs on the host because it needs Chrome.
+report:
+	uv run newcomer-qa report-pdf
