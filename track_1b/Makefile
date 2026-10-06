@@ -1,4 +1,4 @@
-.PHONY: run image fetch generate review-sheet consensus build-dataset evaluate human-page test
+.PHONY: run image fetch generate review-sheet consensus build-dataset evaluate human-page hf test
 
 IMAGE := newcomer-qa
 # The checkout is mounted at /app, so the results are written back to it as the host user, not root.
@@ -32,6 +32,9 @@ evaluate:
 
 human-page:
 	uv run newcomer-qa human-page --mode live
+
+hf:
+	uv run newcomer-qa package-hf
 
 test: image
 	$(DOCKER_RUN) --entrypoint /opt/venv/bin/pytest $(IMAGE) -q -p no:cacheprovider

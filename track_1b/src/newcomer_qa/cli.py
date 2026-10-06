@@ -1,6 +1,7 @@
 import argparse
 
 from newcomer_qa.build import build_dataset
+from newcomer_qa.card import package_hf, write_card
 from newcomer_qa.config import Settings
 from newcomer_qa.consensus import consensus
 from newcomer_qa.evaluate import EvalConfig, evaluate
@@ -24,6 +25,7 @@ def main() -> None:
     evaluate_parser.add_argument("--update", action="store_true", help="overwrite results/scores.json instead of checking it")
     human_parser = commands.add_parser("human-page", help="write the blind judge-check page for a random 20% sample")
     human_parser.add_argument("--mode", choices=["live", "replay"], default="replay", help="live translates new items")
+    commands.add_parser("package-hf", help="write hf/: the dataset card as README.md and the data files to upload")
     args = parser.parse_args()
 
     settings = Settings()
@@ -42,5 +44,8 @@ def main() -> None:
         primary = EvalConfig.load(settings.eval_config).primary_grader
         path = write_scores(responses, settings.results_dir, args.update, primary, agreement(settings, responses))
         print((path.parent / "summary.md").read_text(encoding="utf-8"))
+        print(f"wrote {write_card(settings)}")
+    elif args.command == "package-hf":
+        print(f"wrote {package_hf(settings)}")
     elif args.command == "human-page":
         print(f"wrote {write_human_page(settings, args.mode)}")

@@ -28,3 +28,5 @@ build/
 
 # ch.ch page text: fetched locally, never committed (© Federal Chancellery)
 data/raw/
+# Built by `make hf` for upload; the sources are committed under data/dataset and docs/.
+hf/

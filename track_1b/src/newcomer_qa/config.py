@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     # First-pass suggestions by an AI reviewer; the human decision columns stay separate.
     review_suggestions: Path = RAW_DIR / "review" / "suggestions.jsonl"
     first_pass_reviewer: str = "opus"
+    reviewer_models: dict[str, str] = {"opus": "Claude Opus 5.5", "sonnet": "Claude Sonnet 5.5", "fable": "Claude Fable 5.1"}
     reviews_dir: Path = RAW_DIR / "review" / "reviews"
     consensus: Path = RAW_DIR / "review" / "consensus.jsonl"
     adjudication_packet: Path = RAW_DIR / "review" / "adjudication_packet.jsonl"
@@ -51,6 +52,10 @@ class Settings(BaseSettings):
     human_page: Path = TRACK_DIR / "data" / "human" / "judge_check.html"
     # One file per grader (key, grade): the primary grader of every response, graders of the blind sample.
     grades_dir: Path = TRACK_DIR / "data" / "grades"
+    card_template: Path = TRACK_DIR / "docs" / "dataset_card.template.md"
+    card: Path = TRACK_DIR / "docs" / "dataset_card.md"
+    # Folder uploaded to the Hugging Face dataset repository; rebuilt by `make hf`, not committed.
+    hf_dir: Path = TRACK_DIR / "hf"
     source_publisher: str = "ch.ch, Swiss Federal Chancellery (source of facts only; no text reproduced)"
     max_copied_words: int = 8
     # Languages the reviewer does not read: the review sheet adds an English translation for these.

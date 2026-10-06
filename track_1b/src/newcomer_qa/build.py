@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from newcomer_qa.config import Settings
 from newcomer_qa.consensus import Consensus, Review, load_reviews
+from newcomer_qa.fetch import StoredPage, page_path
 from newcomer_qa.generate import Candidate
 from newcomer_qa.review import load_candidates
 
@@ -26,6 +27,8 @@ class Metadata(BaseModel):
     item_id: str
     source_url: str
     source_modified_at: datetime | None
+    # When the page was fetched, i.e. the date on which the answer was checked against ch.ch.
+    source_fetched_at: datetime
     source_publisher: str
     license: str
     tags: list[str]
@@ -34,6 +37,19 @@ class Metadata(BaseModel):
     adjudicated: bool
     final_decision: str
     question_reworded: bool
+
+
+class ReviewLogEntry(BaseModel):
+    """One line per drafted candidate, kept or not; published so the path from draft to dataset can be audited."""
+
+    candidate_id: str
+    lang: str
+    topic: str
+    source_url: str
+    review_votes: dict[str, str]
+    consensus: str
+    adjudication: str | None
+    in_dataset: bool
 
 
 def longest_copied_run(text: str, evidence: str) -> int:
@@ -72,10 +88,20 @@ def build_dataset(settings: Settings) -> None:
     if pending:
         raise ValueError(f"{len(pending)} items still need adjudication, e.g. {pending[0]}")
 
-    cases, metadata, problems = [], [], Counter()
+    fetched_at = {}
+    for candidate in candidates:
+        path = page_path(settings.raw_dir, candidate.lang, candidate.page_id)
+        fetched_at[candidate.lang, candidate.page_id] = StoredPage.model_validate_json(path.read_text(encoding="utf-8")).fetched_at
+    cases, metadata, log, problems = [], [], [], Counter()
     for candidate in candidates:
         outcome = outcomes[candidate.candidate_id]
         review = final_review(candidate, outcome, adjudications)
+        adjudication = adjudications.get(candidate.candidate_id)
+        log.append(ReviewLogEntry(
+            candidate_id=candidate.candidate_id, lang=candidate.lang, topic=candidate.topic, source_url=candidate.url,
+            review_votes=outcome.votes, consensus=outcome.outcome,
+            adjudication=adjudication.decision if adjudication else None, in_dataset=review is not None,
+        ))
         if review is None:
             continue
         question = rewrites.get(candidate.candidate_id, review.question)
@@ -89,6 +115,7 @@ def build_dataset(settings: Settings) -> None:
                               question=question, answers=answers))
         metadata.append(Metadata(
             item_id=candidate.candidate_id, source_url=candidate.url, source_modified_at=candidate.page_modified_at,
+            source_fetched_at=fetched_at[candidate.lang, candidate.page_id],
             source_publisher=settings.source_publisher, license=settings.dataset_license,
             tags=[t.strip() for t in review.note.split(",") if t.strip()],
             drafted_by=candidate.generator_model, review_votes=outcome.votes,
@@ -97,7 +124,7 @@ def build_dataset(settings: Settings) -> None:
         ))
 
     settings.dataset_dir.mkdir(parents=True, exist_ok=True)
-    for name, rows in (("test_cases.jsonl", cases), ("metadata.jsonl", metadata)):
+    for name, rows in (("test_cases.jsonl", cases), ("metadata.jsonl", metadata), ("review_log.jsonl", log)):
         (settings.dataset_dir / name).write_text(
             "".join(json.dumps(r.model_dump(mode="json"), ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
     print(f"{len(cases)} test cases written to {settings.dataset_dir}")
