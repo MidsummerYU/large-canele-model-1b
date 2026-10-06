@@ -1,0 +1,30 @@
+# Seed pages on ch.ch, in German. Each page's language switcher gives the parallel
+# pages in the other languages listed below. Page text is fetched into data/raw/ and
+# never committed or published: ch.ch content is © Federal Chancellery.
+site: https://www.ch.ch
+languages: [de, fr, it, en]
+
+topics:
+  registration:
+    - /de/wohnen/umzug/ab-und-anmelden-bei-der-wohngemeinde/
+    - /de/wohnen/umzug/checkliste-fur-den-umzug/
+    - /de/auslander-in-der-schweiz/in-der-schweiz-leben/umzug-in-die-schweiz/
+  health_insurance:
+    - /de/gesundheit/krankenkasse/krankenkasse-abschliessen--wechseln-oder-kundigen/
+    - /de/gesundheit/krankenkasse/kosten-fur-krankenkasse/
+    - /de/gesundheit/krankenkasse/leistungen-der-krankenkasse/
+  residence_permit:
+    - /de/auslander-in-der-schweiz/einreise-in-die-schweiz/aufenthaltsbewilligung/
+    - /de/auslander-in-der-schweiz/einreise-in-die-schweiz/aufenthalt-in-der-schweiz-ohne-arbeit/
+    - /de/auslander-in-der-schweiz/einreise-in-die-schweiz/familiennachzug/
+    - /de/auslander-in-der-schweiz/in-der-schweiz-arbeiten/
+  pension:
+    - /de/arbeit/altersvorsorge/wie-funktioniert-die-altersvorsorge/
+    - /de/arbeit/altersvorsorge/1-saule--ahv-/ahv-beitrage/
+    - /de/arbeit/altersvorsorge/1-saule--ahv-/ahv-nummer/
+    - /de/arbeit/altersvorsorge/2-saule--pensionskasse-/
+  withholding_tax:
+    - /de/auslander-in-der-schweiz/in-der-schweiz-leben/quellensteuer/
+    - /de/steuern-und-finanzen/steuererklarung/
+  naturalisation:
+    - /de/auslander-in-der-schweiz/einburgerung/

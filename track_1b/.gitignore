@@ -25,3 +25,6 @@ build/
 .DS_Store
 .idea/
 .vscode/
+
+# ch.ch page text: fetched locally, never committed (© Federal Chancellery)
+data/raw/
