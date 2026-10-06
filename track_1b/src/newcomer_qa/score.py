@@ -53,16 +53,11 @@ def breakdown(responses: list[Response]) -> dict[str, dict[str, dict[str, Scores
     return table
 
 
-def summary_markdown(table: dict[str, dict[str, dict[str, Scores]]], agreement: dict | None) -> str:
+def summary_markdown(table: dict[str, dict[str, dict[str, Scores]]], agreement: dict[str, dict]) -> str:
     lines = ["# Closed-book results", "", "SimpleQA grading by the judge in data/eval.yaml.", ""]
-    if agreement is None:
-        lines += ["Judge-human agreement: not available until data/human/human_grades.jsonl is committed.", ""]
-    else:
-        lines += [
-            f"Judge-human agreement on {agreement['n']} human-graded judgements: {agreement['agreement']:.1%}, "
-            f"Cohen's kappa {agreement['cohen_kappa']:.3f}.",
-            "",
-        ]
+    lines += ["## Grader agreement on the sample", "", "| comparison | n | agreement | Cohen's kappa |", "|---|---|---|---|"]
+    lines += [f"| {name} | {a['n']} | {a['agreement']:.1%} | {a['cohen_kappa']:.3f} |" for name, a in agreement.items()]
+    lines.append("")
     for field in ("all", "lang", "topic"):
         lines += [
             f"## By {field}" if field != "all" else "## Overall",
@@ -80,11 +75,12 @@ def summary_markdown(table: dict[str, dict[str, dict[str, Scores]]], agreement: 
     return "\n".join(lines)
 
 
-def write_scores(responses: list[Response], results_dir: Path, update: bool, agreement: dict | None = None) -> Path:
+def write_scores(responses: list[Response], results_dir: Path, update: bool, agreement: dict[str, dict] | None = None) -> Path:
     """Write the scores; unless `update`, first check them against the committed ones."""
     table = breakdown(responses)
     content = {m: {f: {g: s.model_dump() for g, s in v.items()} for f, v in d.items()} for m, d in table.items()}
-    document = json.dumps({"scores": content, "judge_human_agreement": agreement}, indent=2) + "\n"
+    agreement = agreement or {}
+    document = json.dumps({"scores": content, "grader_agreement": agreement}, indent=2) + "\n"
     path = results_dir / "scores.json"
     if path.exists() and not update and path.read_text(encoding="utf-8") != document:
         raise ScoresMismatchError(f"recomputed scores differ from {path}; rerun with --update if the change is intended")

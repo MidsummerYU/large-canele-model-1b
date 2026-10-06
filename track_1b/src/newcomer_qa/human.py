@@ -86,16 +86,36 @@ def cohen_kappa(pairs: list[tuple[str, str]]) -> float:
     return (observed - expected) / (1 - expected) if expected < 1 else 1.0
 
 
-def agreement(settings: Settings, responses: list[Response]) -> dict | None:
-    """Judge-human agreement on the graded sample; None until the human grades are in the repository."""
-    if not settings.human_grades.exists():
-        return None
-    with settings.human_grades.open(encoding="utf-8") as f:
-        human = {g.key: g.grade for g in (HumanGrade.model_validate_json(line) for line in f if line.strip())}
-    pairs = [(r.grade or "ungraded", human[response_key(r)]) for r in responses if response_key(r) in human]
+def _load_grades(path: Path) -> dict[str, Grade]:
+    with path.open(encoding="utf-8") as f:
+        return {g.key: g.grade for g in (HumanGrade.model_validate_json(line) for line in f if line.strip())}
+
+
+def reference_grades(settings: Settings) -> dict[str, dict[str, Grade]]:
+    """Grader name -> response key -> grade, for the human check and each independent AI grader."""
+    graders = {"human": _load_grades(settings.human_grades)} if settings.human_grades.exists() else {}
+    for path in sorted(settings.ai_grades_dir.glob("*.jsonl")):
+        graders[path.stem] = _load_grades(path)
+    return graders
+
+
+def _compare(first: dict[str, str], second: dict[str, str]) -> dict:
+    pairs = [(first[key], second[key]) for key in sorted(first.keys() & second.keys())]
     return {
         "n": len(pairs),
         "agreement": sum(a == b for a, b in pairs) / len(pairs),
         "cohen_kappa": cohen_kappa(pairs),
-        "confusion": {f"judge={a} human={b}": count for (a, b), count in sorted(Counter(pairs).items())},
+        "confusion": {f"{a} / {b}": count for (a, b), count in sorted(Counter(pairs).items())},
     }
+
+
+def agreement(settings: Settings, responses: list[Response]) -> dict[str, dict]:
+    """Agreement of the judge with every reference grader, and of the reference graders with each other."""
+    judge = {response_key(r): r.grade or "ungraded" for r in responses}
+    graders = reference_grades(settings)
+    comparisons = {f"judge vs {name}": _compare(judge, grades) for name, grades in graders.items()}
+    names = list(graders)
+    for i, first in enumerate(names):
+        for second in names[i + 1 :]:
+            comparisons[f"{first} vs {second}"] = _compare(graders[first], graders[second])
+    return comparisons

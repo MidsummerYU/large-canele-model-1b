@@ -50,6 +50,8 @@ class Settings(BaseSettings):
     human_page_template: Path = Path(__file__).parent / "human_page.html"
     human_page: Path = TRACK_DIR / "data" / "human" / "judge_check.html"
     human_grades: Path = TRACK_DIR / "data" / "human" / "human_grades.jsonl"
+    # Independent AI graders of the same blind sample, used while no human grades exist.
+    ai_grades_dir: Path = TRACK_DIR / "data" / "human" / "ai"
     source_publisher: str = "ch.ch, Swiss Federal Chancellery (source of facts only; no text reproduced)"
     max_copied_words: int = 8
     # Languages the reviewer does not read: the review sheet adds an English translation for these.

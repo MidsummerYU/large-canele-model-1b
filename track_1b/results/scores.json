@@ -429,5 +429,49 @@
       }
     }
   },
-  "judge_human_agreement": null
+  "grader_agreement": {
+    "judge vs claude-opus-5-5": {
+      "n": 132,
+      "agreement": 0.6893939393939394,
+      "cohen_kappa": 0.4914967584327728,
+      "confusion": {
+        "correct / correct": 59,
+        "correct / incorrect": 19,
+        "correct / not_attempted": 5,
+        "incorrect / correct": 1,
+        "incorrect / incorrect": 23,
+        "not_attempted / correct": 1,
+        "not_attempted / incorrect": 15,
+        "not_attempted / not_attempted": 9
+      }
+    },
+    "judge vs claude-sonnet-5-5": {
+      "n": 132,
+      "agreement": 0.7196969696969697,
+      "cohen_kappa": 0.5278878685355245,
+      "confusion": {
+        "correct / correct": 62,
+        "correct / incorrect": 14,
+        "correct / not_attempted": 7,
+        "incorrect / correct": 1,
+        "incorrect / incorrect": 23,
+        "not_attempted / correct": 3,
+        "not_attempted / incorrect": 12,
+        "not_attempted / not_attempted": 10
+      }
+    },
+    "claude-opus-5-5 vs claude-sonnet-5-5": {
+      "n": 132,
+      "agreement": 0.9318181818181818,
+      "cohen_kappa": 0.8854056139673963,
+      "confusion": {
+        "correct / correct": 60,
+        "correct / not_attempted": 1,
+        "incorrect / correct": 6,
+        "incorrect / incorrect": 49,
+        "incorrect / not_attempted": 2,
+        "not_attempted / not_attempted": 14
+      }
+    }
+  }
 }

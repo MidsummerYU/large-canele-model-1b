@@ -2,7 +2,13 @@
 
 SimpleQA grading by the judge in data/eval.yaml.
 
-Judge-human agreement: not available until data/human/human_grades.jsonl is committed.
+## Grader agreement on the sample
+
+| comparison | n | agreement | Cohen's kappa |
+|---|---|---|---|
+| judge vs claude-opus-5-5 | 132 | 68.9% | 0.491 |
+| judge vs claude-sonnet-5-5 | 132 | 72.0% | 0.528 |
+| claude-opus-5-5 vs claude-sonnet-5-5 | 132 | 93.2% | 0.885 |
 
 ## Overall
 
