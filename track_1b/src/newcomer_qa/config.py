@@ -30,6 +30,16 @@ class Settings(BaseSettings):
     review_sheet: Path = RAW_DIR / "review" / "candidates.csv"
     # First-pass suggestions by an AI reviewer; the human decision columns stay separate.
     review_suggestions: Path = RAW_DIR / "review" / "suggestions.jsonl"
+    first_pass_reviewer: str = "opus"
+    reviews_dir: Path = RAW_DIR / "review" / "reviews"
+    consensus: Path = RAW_DIR / "review" / "consensus.jsonl"
+    adjudication_packet: Path = RAW_DIR / "review" / "adjudication_packet.jsonl"
+    adjudications_dir: Path = RAW_DIR / "review" / "adjudications"
+    question_rewrites: Path = RAW_DIR / "review" / "question_rewrites.jsonl"
+    dataset_dir: Path = TRACK_DIR / "data" / "dataset"
+    dataset_license: str = "CDLA-Permissive-2.0"
+    source_publisher: str = "ch.ch, Swiss Federal Chancellery (source of facts only; no text reproduced)"
+    max_copied_words: int = 8
     # Languages the reviewer does not read: the review sheet adds an English translation for these.
     translate_for_review: list[str] = ["de", "it"]
     # ch.ch answers 404 to the default httpx and curl User-Agents.

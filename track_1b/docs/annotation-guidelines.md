@@ -1,8 +1,9 @@
 # Annotation guidelines
 
 How a drafted candidate becomes a test item. Candidates are drafted by Apertus v1.5 70B from one
-ch.ch page each (`make generate`) and reviewed by a human in the review sheet (`make review-sheet`).
-Nothing enters the dataset without a human decision.
+ch.ch page each (`make generate`). Each candidate is then reviewed against these guidelines by three
+independent AI reviewers, and disagreements are adjudicated (see *Review process*). No item was
+reviewed one by one by a human.
 
 ## What the reviewer sees
 
@@ -13,22 +14,28 @@ Nothing enters the dataset without a human decision.
 | `question_en`, `answer_en`, `evidence_en` | English machine translation, for `de` and `it` items |
 | `url` | The source page |
 
-## First pass by an AI reviewer
+## Review process
 
-Before the human review, Claude (Anthropic) applied these guidelines to every candidate and wrote a
-suggested decision, corrected fields, tags and a one-line reason into the `suggested_*` columns. The
-human reviewer fills the decision columns independently and may copy a suggestion only after checking
-it against the evidence. Agreement between the suggestions and the human decisions is reported in the
-data card.
+1. **Three blind reviews.** Claude Opus 5.5, Claude Sonnet 5.5 and Claude Fable 5.1 each reviewed every
+   candidate with these guidelines, without seeing the other reviews. Reviewers other than the
+   generator were chosen so that the model that wrote an item never judges it.
+2. **Outcome rule** (`make consensus`): unanimous `keep` keeps the draft; a majority of `drop` removes
+   the item; everything else goes to adjudication, so that one reviewer who spots a real error is not
+   outvoted. Agreement is reported as Fleiss' kappa over keep/edit/drop.
+3. **Adjudication.** Claude Opus 5.5 sees the draft, the evidence and the three reviews, re-checks the
+   evidence itself and writes the complete final question, answers and tags.
+4. **Automatic checks** (`make build-dataset`): the question must be in the language of its source
+   page, and must not share 8 or more consecutive words with the source passage. Questions that fail
+   the second check are reworded and flagged `question_reworded` in the metadata.
 
 ## Decision
 
-Fill `decision` with exactly one of:
+Each reviewer chooses exactly one of:
 
 - **`keep`**: the item meets every criterion below as drafted.
-- **`edit`**: the fact is a good test item but the wording, answer or variants need fixing. Write the
-  corrected text in `question_fixed`, `answer_fixed`, `variants_fixed` (variants separated by ` | `).
-  Leave a field empty to keep the draft's value.
+- **`edit`**: the fact is a good test item but the wording, answer or variants need fixing. Give the
+  corrected question, answer and variants (variants separated by ` | `); a field left empty keeps the
+  draft's value.
 - **`drop`**: the item cannot be fixed by rewording.
 
 ## Criteria for a question
@@ -54,9 +61,8 @@ Fill `decision` with exactly one of:
 
 ## Items in German and Italian
 
-The reviewer does not read German or Italian. These items are reviewed through the English
-translation; numbers, dates and amounts are checked against the original `evidence` directly. The data
-card reports which items were reviewed this way.
+The review sheet adds an English machine translation for `de` and `it` items as an aid. The AI
+reviewers read the original question, answer and evidence; the translation is never the reference.
 
 ## Tags
 
@@ -67,7 +73,6 @@ Write tags in `note`, separated by commas. Tags are counted in the dataset stati
 | `cantonal` | The answer depends on the canton or commune; candidate for the edge-case set |
 | `ambiguous` | More than one reasonable answer; drop or rewrite |
 | `trivial` | Answer is implied by the question |
-| `translation` | The English translation was wrong or misleading |
 | `dated` | An amount or threshold that is revised over time; the verification date matters |
 | `duplicate` | Same fact and evidence as another item in the same language |
 
