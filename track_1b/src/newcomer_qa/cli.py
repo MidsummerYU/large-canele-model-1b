@@ -3,9 +3,12 @@ import argparse
 from newcomer_qa.build import build_dataset
 from newcomer_qa.config import Settings
 from newcomer_qa.consensus import consensus
+from newcomer_qa.evaluate import evaluate
 from newcomer_qa.fetch import fetch
 from newcomer_qa.generate import generate
+from newcomer_qa.human import agreement, write_human_page
 from newcomer_qa.review import review_sheet
+from newcomer_qa.score import write_scores
 
 
 def main() -> None:
@@ -16,6 +19,11 @@ def main() -> None:
     commands.add_parser("review-sheet", help="write the candidates to a CSV for human review")
     commands.add_parser("consensus", help="combine independent reviews: agreement, outcomes, adjudication packet")
     commands.add_parser("build-dataset", help="write the reviewed test cases and metadata to data/dataset/")
+    evaluate_parser = commands.add_parser("evaluate", help="answer every test case with each model and grade it")
+    evaluate_parser.add_argument("--mode", choices=["live", "replay"], default="replay", help="replay never calls the API")
+    evaluate_parser.add_argument("--update", action="store_true", help="overwrite results/scores.json instead of checking it")
+    human_parser = commands.add_parser("human-page", help="write the blind judge-check page for a random 20% sample")
+    human_parser.add_argument("--mode", choices=["live", "replay"], default="replay", help="live translates new items")
     args = parser.parse_args()
 
     settings = Settings()
@@ -29,3 +37,9 @@ def main() -> None:
         consensus(settings)
     elif args.command == "build-dataset":
         build_dataset(settings)
+    elif args.command == "evaluate":
+        responses = evaluate(settings, args.mode)
+        path = write_scores(responses, settings.results_dir, args.update, agreement(settings, responses))
+        print((path.parent / "summary.md").read_text(encoding="utf-8"))
+    elif args.command == "human-page":
+        print(f"wrote {write_human_page(settings, args.mode)}")

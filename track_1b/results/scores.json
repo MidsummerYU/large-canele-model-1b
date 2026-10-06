@@ -1,0 +1,433 @@
+{
+  "scores": {
+    "8B/swiss_context": {
+      "all": {
+        "all": {
+          "n": 329,
+          "correct": 0.5531914893617021,
+          "incorrect": 0.23404255319148937,
+          "not_attempted": 0.2127659574468085,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7027027027027027,
+          "f1": 0.6190476190476191
+        }
+      },
+      "lang": {
+        "de": {
+          "n": 82,
+          "correct": 0.5,
+          "incorrect": 0.3170731707317073,
+          "not_attempted": 0.18292682926829268,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6119402985074627,
+          "f1": 0.5503355704697986
+        },
+        "en": {
+          "n": 84,
+          "correct": 0.5,
+          "incorrect": 0.25,
+          "not_attempted": 0.25,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6666666666666666,
+          "f1": 0.5714285714285715
+        },
+        "fr": {
+          "n": 80,
+          "correct": 0.5625,
+          "incorrect": 0.2125,
+          "not_attempted": 0.225,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7258064516129032,
+          "f1": 0.6338028169014084
+        },
+        "it": {
+          "n": 83,
+          "correct": 0.6506024096385542,
+          "incorrect": 0.1566265060240964,
+          "not_attempted": 0.1927710843373494,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8059701492537312,
+          "f1": 0.72
+        }
+      },
+      "topic": {
+        "health_insurance": {
+          "n": 58,
+          "correct": 0.5344827586206896,
+          "incorrect": 0.1896551724137931,
+          "not_attempted": 0.27586206896551724,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7380952380952381,
+          "f1": 0.62
+        },
+        "naturalisation": {
+          "n": 30,
+          "correct": 0.26666666666666666,
+          "incorrect": 0.26666666666666666,
+          "not_attempted": 0.4666666666666667,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5,
+          "f1": 0.3478260869565218
+        },
+        "pension": {
+          "n": 90,
+          "correct": 0.5777777777777777,
+          "incorrect": 0.23333333333333334,
+          "not_attempted": 0.18888888888888888,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7123287671232876,
+          "f1": 0.6380368098159509
+        },
+        "registration": {
+          "n": 25,
+          "correct": 0.52,
+          "incorrect": 0.28,
+          "not_attempted": 0.2,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.65,
+          "f1": 0.5777777777777778
+        },
+        "residence_permit": {
+          "n": 90,
+          "correct": 0.5666666666666667,
+          "incorrect": 0.26666666666666666,
+          "not_attempted": 0.16666666666666666,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.68,
+          "f1": 0.6181818181818183
+        },
+        "withholding_tax": {
+          "n": 36,
+          "correct": 0.75,
+          "incorrect": 0.16666666666666666,
+          "not_attempted": 0.08333333333333333,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8181818181818182,
+          "f1": 0.7826086956521738
+        }
+      }
+    },
+    "70B/swiss_context": {
+      "all": {
+        "all": {
+          "n": 329,
+          "correct": 0.6960486322188449,
+          "incorrect": 0.13069908814589665,
+          "not_attempted": 0.17325227963525835,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8419117647058824,
+          "f1": 0.762063227953411
+        }
+      },
+      "lang": {
+        "de": {
+          "n": 82,
+          "correct": 0.7560975609756098,
+          "incorrect": 0.10975609756097561,
+          "not_attempted": 0.13414634146341464,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8732394366197184,
+          "f1": 0.8104575163398694
+        },
+        "en": {
+          "n": 84,
+          "correct": 0.6071428571428571,
+          "incorrect": 0.16666666666666666,
+          "not_attempted": 0.2261904761904762,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7846153846153846,
+          "f1": 0.6845637583892618
+        },
+        "fr": {
+          "n": 80,
+          "correct": 0.7,
+          "incorrect": 0.1375,
+          "not_attempted": 0.1625,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8358208955223881,
+          "f1": 0.761904761904762
+        },
+        "it": {
+          "n": 83,
+          "correct": 0.7228915662650602,
+          "incorrect": 0.10843373493975904,
+          "not_attempted": 0.1686746987951807,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8695652173913043,
+          "f1": 0.7894736842105263
+        }
+      },
+      "topic": {
+        "health_insurance": {
+          "n": 58,
+          "correct": 0.6896551724137931,
+          "incorrect": 0.10344827586206896,
+          "not_attempted": 0.20689655172413793,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8695652173913043,
+          "f1": 0.7692307692307693
+        },
+        "naturalisation": {
+          "n": 30,
+          "correct": 0.5666666666666667,
+          "incorrect": 0.13333333333333333,
+          "not_attempted": 0.3,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8095238095238095,
+          "f1": 0.6666666666666666
+        },
+        "pension": {
+          "n": 90,
+          "correct": 0.7222222222222222,
+          "incorrect": 0.14444444444444443,
+          "not_attempted": 0.13333333333333333,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8333333333333333,
+          "f1": 0.7738095238095237
+        },
+        "registration": {
+          "n": 25,
+          "correct": 0.44,
+          "incorrect": 0.28,
+          "not_attempted": 0.28,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6111111111111112,
+          "f1": 0.5116279069767442
+        },
+        "residence_permit": {
+          "n": 90,
+          "correct": 0.7555555555555555,
+          "incorrect": 0.1111111111111111,
+          "not_attempted": 0.13333333333333333,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8717948717948717,
+          "f1": 0.8095238095238094
+        },
+        "withholding_tax": {
+          "n": 36,
+          "correct": 0.7777777777777778,
+          "incorrect": 0.08333333333333333,
+          "not_attempted": 0.1388888888888889,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.9032258064516129,
+          "f1": 0.835820895522388
+        }
+      }
+    },
+    "8B/as_asked": {
+      "all": {
+        "all": {
+          "n": 329,
+          "correct": 0.48328267477203646,
+          "incorrect": 0.303951367781155,
+          "not_attempted": 0.2127659574468085,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6138996138996139,
+          "f1": 0.5408163265306123
+        }
+      },
+      "lang": {
+        "de": {
+          "n": 82,
+          "correct": 0.47560975609756095,
+          "incorrect": 0.4024390243902439,
+          "not_attempted": 0.12195121951219512,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5416666666666666,
+          "f1": 0.5064935064935064
+        },
+        "en": {
+          "n": 84,
+          "correct": 0.42857142857142855,
+          "incorrect": 0.21428571428571427,
+          "not_attempted": 0.35714285714285715,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6666666666666667,
+          "f1": 0.5217391304347826
+        },
+        "fr": {
+          "n": 80,
+          "correct": 0.5,
+          "incorrect": 0.375,
+          "not_attempted": 0.125,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5714285714285714,
+          "f1": 0.5333333333333333
+        },
+        "it": {
+          "n": 83,
+          "correct": 0.5301204819277109,
+          "incorrect": 0.2289156626506024,
+          "not_attempted": 0.24096385542168675,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6984126984126985,
+          "f1": 0.6027397260273973
+        }
+      },
+      "topic": {
+        "health_insurance": {
+          "n": 58,
+          "correct": 0.4827586206896552,
+          "incorrect": 0.20689655172413793,
+          "not_attempted": 0.3103448275862069,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7,
+          "f1": 0.5714285714285714
+        },
+        "naturalisation": {
+          "n": 30,
+          "correct": 0.23333333333333334,
+          "incorrect": 0.3333333333333333,
+          "not_attempted": 0.43333333333333335,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.411764705882353,
+          "f1": 0.2978723404255319
+        },
+        "pension": {
+          "n": 90,
+          "correct": 0.5,
+          "incorrect": 0.32222222222222224,
+          "not_attempted": 0.17777777777777778,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6081081081081081,
+          "f1": 0.5487804878048781
+        },
+        "registration": {
+          "n": 25,
+          "correct": 0.36,
+          "incorrect": 0.52,
+          "not_attempted": 0.12,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.40909090909090906,
+          "f1": 0.38297872340425526
+        },
+        "residence_permit": {
+          "n": 90,
+          "correct": 0.5,
+          "incorrect": 0.3111111111111111,
+          "not_attempted": 0.18888888888888888,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6164383561643836,
+          "f1": 0.5521472392638037
+        },
+        "withholding_tax": {
+          "n": 36,
+          "correct": 0.6944444444444444,
+          "incorrect": 0.2222222222222222,
+          "not_attempted": 0.08333333333333333,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7575757575757576,
+          "f1": 0.7246376811594203
+        }
+      }
+    },
+    "70B/as_asked": {
+      "all": {
+        "all": {
+          "n": 329,
+          "correct": 0.6170212765957447,
+          "incorrect": 0.1884498480243161,
+          "not_attempted": 0.1945288753799392,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7660377358490567,
+          "f1": 0.6835016835016835
+        }
+      },
+      "lang": {
+        "de": {
+          "n": 82,
+          "correct": 0.6951219512195121,
+          "incorrect": 0.15853658536585366,
+          "not_attempted": 0.14634146341463414,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8142857142857143,
+          "f1": 0.75
+        },
+        "en": {
+          "n": 84,
+          "correct": 0.4642857142857143,
+          "incorrect": 0.16666666666666666,
+          "not_attempted": 0.36904761904761907,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7358490566037736,
+          "f1": 0.5693430656934306
+        },
+        "fr": {
+          "n": 80,
+          "correct": 0.7125,
+          "incorrect": 0.1875,
+          "not_attempted": 0.1,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7916666666666666,
+          "f1": 0.75
+        },
+        "it": {
+          "n": 83,
+          "correct": 0.6024096385542169,
+          "incorrect": 0.24096385542168675,
+          "not_attempted": 0.1566265060240964,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7142857142857143,
+          "f1": 0.6535947712418301
+        }
+      },
+      "topic": {
+        "health_insurance": {
+          "n": 58,
+          "correct": 0.603448275862069,
+          "incorrect": 0.10344827586206896,
+          "not_attempted": 0.29310344827586204,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8536585365853658,
+          "f1": 0.7070707070707071
+        },
+        "naturalisation": {
+          "n": 30,
+          "correct": 0.43333333333333335,
+          "incorrect": 0.3,
+          "not_attempted": 0.26666666666666666,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5909090909090908,
+          "f1": 0.5
+        },
+        "pension": {
+          "n": 90,
+          "correct": 0.6555555555555556,
+          "incorrect": 0.16666666666666666,
+          "not_attempted": 0.17777777777777778,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7972972972972974,
+          "f1": 0.7195121951219513
+        },
+        "registration": {
+          "n": 25,
+          "correct": 0.48,
+          "incorrect": 0.32,
+          "not_attempted": 0.2,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6,
+          "f1": 0.5333333333333332
+        },
+        "residence_permit": {
+          "n": 90,
+          "correct": 0.6333333333333333,
+          "incorrect": 0.2,
+          "not_attempted": 0.16666666666666666,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.76,
+          "f1": 0.6909090909090909
+        },
+        "withholding_tax": {
+          "n": 36,
+          "correct": 0.75,
+          "incorrect": 0.16666666666666666,
+          "not_attempted": 0.08333333333333333,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8181818181818182,
+          "f1": 0.7826086956521738
+        }
+      }
+    }
+  },
+  "judge_human_agreement": null
+}

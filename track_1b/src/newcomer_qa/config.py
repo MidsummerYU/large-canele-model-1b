@@ -38,6 +38,18 @@ class Settings(BaseSettings):
     question_rewrites: Path = RAW_DIR / "review" / "question_rewrites.jsonl"
     dataset_dir: Path = TRACK_DIR / "data" / "dataset"
     dataset_license: str = "CDLA-Permissive-2.0"
+    eval_config: Path = TRACK_DIR / "data" / "eval.yaml"
+    grader_prompt: Path = TRACK_DIR / "data" / "grader" / "simpleqa_grader.txt"
+    # Evaluation calls contain only our own questions and the models' replies, so they are published.
+    recordings_dir: Path = TRACK_DIR / "data" / "recordings"
+    responses: Path = TRACK_DIR / "data" / "dataset" / "responses.jsonl"
+    results_dir: Path = TRACK_DIR / "results"
+    # The challenge asks for a human check of a random 20% of the judge's grades.
+    human_sample_share: float = 0.2
+    human_sample_seed: int = 20261016
+    human_page_template: Path = Path(__file__).parent / "human_page.html"
+    human_page: Path = TRACK_DIR / "data" / "human" / "judge_check.html"
+    human_grades: Path = TRACK_DIR / "data" / "human" / "human_grades.jsonl"
     source_publisher: str = "ch.ch, Swiss Federal Chancellery (source of facts only; no text reproduced)"
     max_copied_words: int = 8
     # Languages the reviewer does not read: the review sheet adds an English translation for these.

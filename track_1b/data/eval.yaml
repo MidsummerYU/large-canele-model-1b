@@ -1,0 +1,26 @@
+# Closed-book evaluation of data/dataset/test_cases.jsonl. `newcomer-qa evaluate` (and so `make run`)
+# replays every call from data/recordings; `--mode live` calls the endpoint for requests not recorded yet.
+endpoint: https://api.inference.cscs.ch/v1
+# Short names are how the results and the report refer to each model.
+models:
+  8B: swiss-ai/Apertus-v1.5-8B
+  70B: swiss-ai/Apertus-v1.5-70B
+# Each question is asked once per condition. Many questions do not say they are about Switzerland, so the main
+# condition states it the way a newcomer would; as_asked keeps the bare question to measure what the model assumes.
+conditions:
+  swiss_context:
+    de: Ich wohne in der Schweiz.
+    fr: J'habite en Suisse.
+    it: Vivo in Svizzera.
+    en: I live in Switzerland.
+  as_asked: {}
+# The condition the human check samples from and the report leads with.
+main_condition: swiss_context
+answer:
+  temperature: 0.0
+  max_tokens: 512
+# The CSCS key serves only Apertus models, so the judge is the larger Apertus; a human checks a random 20%.
+judge:
+  model: swiss-ai/Apertus-v1.5-70B
+  temperature: 0.0
+  max_tokens: 16

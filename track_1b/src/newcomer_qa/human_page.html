@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Judge check</title>
+<style>
+  :root { --bg: #fcfcfb; --ink: #0b0b0b; --muted: #52514e; --line: #e1e0d9; --accent: #2a78d6; --card: #ffffff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1a1a19; --ink: #ffffff; --muted: #c3c2b7; --line: #383835; --accent: #3987e5; --card: #232322; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  .rules { color: var(--muted); font-size: 14px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin: 16px 0; }
+  .label { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-top: 12px; }
+  .label:first-child { margin-top: 0; }
+  .text { white-space: pre-wrap; }
+  .translation { color: var(--muted); font-size: 14px; white-space: pre-wrap; }
+  .buttons { display: flex; gap: 8px; flex-wrap: wrap; position: sticky; bottom: 0; padding: 12px 0; background: var(--bg); }
+  button { font: inherit; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  button.chosen { border-color: var(--accent); outline: 2px solid var(--accent); }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  kbd { border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="rules">
+    Compare the model's answer with the gold answer. <b>Correct</b>: contains the gold answer and nothing that contradicts it.
+    <b>Incorrect</b>: states something that contradicts it, even with hedging. <b>Not attempted</b>: neither gives the gold
+    answer nor contradicts it ("I don't know", "ask your canton"). Keys <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd>, <kbd>←</kbd> back.
+  </div>
+  <div class="bar">
+    <span id="progress"></span>
+    <span><button id="previous">← Back</button> <button id="export">Export grades</button></span>
+  </div>
+  <div class="card" id="item"></div>
+  <div class="buttons">
+    <button data-grade="correct">1 · Correct</button>
+    <button data-grade="incorrect">2 · Incorrect</button>
+    <button data-grade="not_attempted">3 · Not attempted</button>
+  </div>
+</main>
+<script>
+const ITEMS = __ITEMS__;
+const STORE = "judge-check-grades";
+let grades = {};
+try { grades = JSON.parse(localStorage.getItem(STORE) || "{}"); } catch (e) {}
+let index = Math.max(0, ITEMS.findIndex(item => !(item.key in grades)));
+
+function save() { try { localStorage.setItem(STORE, JSON.stringify(grades)); } catch (e) {} }
+
+function field(label, text, translation) {
+  const block = document.createElement("div");
+  block.innerHTML = `<div class="label"></div><div class="text"></div>`;
+  block.querySelector(".label").textContent = label;
+  block.querySelector(".text").textContent = text;
+  if (translation) {
+    const t = document.createElement("div");
+    t.className = "translation";
+    t.textContent = "EN: " + translation;
+    block.appendChild(t);
+  }
+  return block;
+}
+
+function render() {
+  const done = ITEMS.filter(item => item.key in grades).length;
+  document.getElementById("progress").textContent = `${index + 1} / ${ITEMS.length} · ${done} graded`;
+  const item = ITEMS[index];
+  const card = document.getElementById("item");
+  card.replaceChildren(
+    field(`Question (${item.lang})`, item.question, item.translation && item.translation.question),
+    field("Gold answer", item.gold, item.translation && item.translation.gold),
+    field("Model answer", item.response, item.translation && item.translation.response),
+  );
+  document.querySelectorAll("[data-grade]").forEach(b => b.classList.toggle("chosen", grades[item.key] === b.dataset.grade));
+}
+
+function grade(value) {
+  grades[ITEMS[index].key] = value;
+  save();
+  if (index < ITEMS.length - 1) index += 1;
+  render();
+}
+
+document.querySelectorAll("[data-grade]").forEach(b => b.addEventListener("click", () => grade(b.dataset.grade)));
+document.getElementById("previous").addEventListener("click", () => { index = Math.max(0, index - 1); render(); });
+document.addEventListener("keydown", event => {
+  const keys = { "1": "correct", "2": "incorrect", "3": "not_attempted" };
+  if (keys[event.key]) grade(keys[event.key]);
+  if (event.key === "ArrowLeft") { index = Math.max(0, index - 1); render(); }
+});
+document.getElementById("export").addEventListener("click", () => {
+  const lines = ITEMS.filter(item => item.key in grades).map(item => JSON.stringify({ key: item.key, grade: grades[item.key] }));
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(new Blob([lines.join("\n") + "\n"], { type: "application/jsonl" }));
+  link.download = "human_grades.jsonl";
+  link.click();
+});
+render();
+</script>
+</body>
+</html>
