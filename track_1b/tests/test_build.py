@@ -11,3 +11,7 @@ def test_longest_copied_run_counts_consecutive_words_shared_with_the_source():
 
 def test_longest_copied_run_matches_whole_words_only():
     assert longest_copied_run("Tag", EVIDENCE) == 0
+
+
+def test_a_soft_hyphen_in_the_source_does_not_hide_a_copied_run():
+    assert longest_copied_run("der Durchschnitt aller Kantone", "der Durch­schnitt aller Kantone") == 4

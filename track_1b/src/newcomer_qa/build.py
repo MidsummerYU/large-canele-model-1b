@@ -7,6 +7,7 @@ import py3langid
 from pydantic import BaseModel
 
 from newcomer_qa.config import Settings
+from newcomer_qa.chch import strip_format_characters
 from newcomer_qa.consensus import Consensus, Review, load_reviews
 from newcomer_qa.fetch import StoredPage, page_path
 from newcomer_qa.generate import Candidate
@@ -53,7 +54,8 @@ class ReviewLogEntry(BaseModel):
 
 
 def longest_copied_run(text: str, evidence: str) -> int:
-    words, source = WORD.findall(text.casefold()), " ".join(WORD.findall(evidence.casefold()))
+    words = WORD.findall(text.casefold())
+    source = " ".join(WORD.findall(strip_format_characters(evidence).casefold()))
     best = 0
     for start in range(len(words)):
         for end in range(start + best + 1, len(words) + 1):

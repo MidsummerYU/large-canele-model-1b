@@ -1,6 +1,7 @@
 import json
 from collections.abc import Iterator
 from datetime import datetime
+import unicodedata
 from urllib.parse import urljoin
 
 from pydantic import BaseModel
@@ -30,8 +31,13 @@ class Page(BaseModel):
     alternates: dict[str, str]
 
 
+def strip_format_characters(text: str) -> str:
+    # ch.ch hyphenates long words with soft hyphens (U+00AD), which split them for any string match.
+    return "".join(ch for ch in text if unicodedata.category(ch) != "Cf")
+
+
 def _clean(node: LexborNode) -> str:
-    return " ".join(node.text(deep=True).split())
+    return " ".join(strip_format_characters(node.text(deep=True)).split())
 
 
 def _is_link_list(node: LexborNode) -> bool:
