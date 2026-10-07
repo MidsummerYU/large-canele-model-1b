@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, model_validator
 from newcomer_qa.build import TestCase
 from newcomer_qa.client import ChatRequest, Mode, RecordingClient
 from newcomer_qa.config import Settings
+from newcomer_qa.edge import EDGE_KINDS, FACT_KIND
 
 Grade = Literal["correct", "incorrect", "not_attempted"]
 GRADE_LETTERS: dict[str, Grade] = {"A": "correct", "B": "incorrect", "C": "not_attempted"}
@@ -57,6 +58,8 @@ class Response(BaseModel):
     topic: str
     model: str
     condition: str
+    # "fact" for regular items, otherwise the edge-case tag (cantonal, false_premise).
+    kind: str = FACT_KIND
     response: str
     # From the primary grader's committed grades; None for a response it has not graded yet.
     grade: Grade | None
@@ -96,12 +99,22 @@ def load_grades(path: Path) -> dict[str, Grade]:
         return {g.key: g.grade for g in (GradeRecord.model_validate_json(line) for line in f if line.strip())}
 
 
+def item_kinds(dataset_dir: Path) -> dict[str, str]:
+    kinds = {}
+    with (dataset_dir / "metadata.jsonl").open(encoding="utf-8") as f:
+        for line in filter(str.strip, f):
+            row = json.loads(line)
+            kinds[row["item_id"]] = next((t for t in row["tags"] if t in EDGE_KINDS.values()), FACT_KIND)
+    return kinds
+
+
 def evaluate(settings: Settings, mode: Mode) -> list[Response]:
     config = EvalConfig.load(settings.eval_config)
     client = RecordingClient(settings.model_copy(update={"llm_base_url": config.endpoint}), settings.recordings_dir, mode)
     grader = settings.grader_prompt.read_text(encoding="utf-8")
     cases = load_test_cases(settings.dataset_dir / "test_cases.jsonl")
     primary = load_grades(settings.grades_dir / f"{config.primary_grader}.jsonl")
+    kinds = item_kinds(settings.dataset_dir)
 
     def respond(job: tuple[str, str, TestCase]) -> Response:
         name, condition, case = job
@@ -130,6 +143,7 @@ def evaluate(settings: Settings, mode: Mode) -> list[Response]:
             topic=case.topic,
             model=name,
             condition=condition,
+            kind=kinds[case.item_id],
             response=answer,
             grade=primary.get(key),
             judge_grade=parse_grade(verdict),

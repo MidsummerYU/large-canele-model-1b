@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     adjudication_packet: Path = RAW_DIR / "review" / "adjudication_packet.jsonl"
     adjudications_dir: Path = RAW_DIR / "review" / "adjudications"
     question_rewrites: Path = RAW_DIR / "review" / "question_rewrites.jsonl"
+    # Edge cases (cantonal answers, false premises): source passages, drafts and the independent review, all local.
+    edge_dir: Path = RAW_DIR / "edge"
+    edge_drafter: str = "claude-opus-5-5"
+    edge_reviewer: str = "sonnet"
     dataset_dir: Path = TRACK_DIR / "data" / "dataset"
     dataset_license: str = "CDLA-Permissive-2.0"
     eval_config: Path = TRACK_DIR / "data" / "eval.yaml"

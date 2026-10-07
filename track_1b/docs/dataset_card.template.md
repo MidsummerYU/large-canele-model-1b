@@ -19,9 +19,11 @@ configs:
 
 {items} closed-book questions in {languages} about the administrative procedures people face when they move to
 Switzerland: registering with the commune, residence permits, health insurance, the AHV/AVS pension system,
-withholding tax and naturalisation. Every question has a short factual answer with accepted variants, valid
-everywhere in Switzerland and stated on a cited page of [ch.ch](https://www.ch.ch), the federal government's
-information portal. The dataset ships with the answers of Apertus 1.5 8B and 70B and their SimpleQA grades.
+withholding tax and naturalisation. Every question has a short reference answer with accepted variants, stated on a
+cited page of [ch.ch](https://www.ch.ch), the federal government's information portal. {regular_items} are regular
+facts that hold everywhere in Switzerland; {edge_items} are edge cases, where the answer depends on the canton or the
+question rests on a false premise that a careful assistant must correct. The dataset ships with the answers of Apertus 1.5 8B and 70B and
+their SimpleQA grades.
 
 ## Dataset Details
 
@@ -47,8 +49,8 @@ information portal. The dataset ships with the answers of Apertus 1.5 8B and 70B
 ### Out-of-Scope Use
 
 - Legal or administrative advice. Rules change; the answers were checked on the dates in `source_fetched_at`.
-- Cantonal or communal rules. Items whose answer depends on the canton were excluded, so the set says nothing
-  about cantonal knowledge.
+- Cantonal or communal rules. The cantonal items only test whether a model says that a rule depends on the canton;
+  the set does not contain each canton's answer.
 - Training. The set is small and meant for evaluation; training on it makes later evaluations meaningless.
 
 ### Specifications
@@ -58,7 +60,7 @@ Every item passed review against the annotation guidelines (`docs/annotation-gui
 1. a newcomer would plausibly ask it, and it names the procedure it is about;
 2. it has one short factual answer (deadline, amount, age, number, office, document, yes/no);
 3. the cited ch.ch passage states that answer explicitly;
-4. the answer holds everywhere in Switzerland;
+4. the answer holds everywhere in Switzerland (regular items) or the page says it depends on the canton (cantonal items);
 5. it is written in the language of its source page and in our own words: no {max_copied_words} or more consecutive
    words are copied from the source;
 6. every accepted answer variant is correct and complete on its own.
@@ -68,6 +70,16 @@ Every item passed review against the annotation guidelines (`docs/annotation-gui
 Composition by topic and language:
 
 {composition}
+
+By item kind:
+
+{edge_composition}
+
+- **fact** ({regular_items}): one short answer that holds everywhere in Switzerland.
+- **cantonal** ({edge[cantonal][kept]}): asked as if there were one national answer, but the cited page says it depends on
+  the canton or commune; the reference answer says so (with the national frame where the page gives one).
+- **false_premise** ({edge[false_premise][kept]}): the question takes a wrong deadline, amount, age, obligation or office for
+  granted; the reference answer rejects the premise and states the correct fact.
 
 On average an item lists {answers_mean:.1f} accepted answers.
 
@@ -136,6 +148,15 @@ procedures, not people: there are no data subjects.
    copy {max_copied_words}+ consecutive words from the passage; {reworded} questions were reworded for the second check.
 5. **Result.** {items} items; {tags[dated]} are tagged `dated` (amounts that are revised over time).
 
+6. **Edge cases.** Claude Opus 5.5 drafted one cantonal item for each of the {edge[cantonal][sources]} passages that say a
+   rule varies by canton or commune (it skipped {edge[cantonal][skipped]} where the variation is not by canton or not
+   something a newcomer asks), and one false-premise item for each of {edge[false_premise][sources]} regular items sampled
+   evenly across topics (skipped {edge[false_premise][skipped]}). Claude Sonnet 5.5 reviewed every draft blind against the
+   passage with stricter rules (every statement of the answer stated explicitly, the premise clearly false yet
+   plausible) and dropped {edge[cantonal][dropped]} cantonal and {edge[false_premise][dropped]} false-premise drafts. The same
+   language and copy checks apply. French has fewer cantonal items because several French passages say a rule varies
+   "case by case", not by canton.
+
 `review_log.jsonl` records every vote and outcome, including the dropped candidates. **No item was reviewed one by
 one by a human.**
 
@@ -163,7 +184,10 @@ Grades follow SimpleQA (correct / incorrect / not attempted) with its unchanged 
   SimpleQA, an answer that neither confirms nor contradicts the reference (e.g. a range around it) is not attempted.
 - **Apertus 1.5 70B** grades every response inside the evaluation harness (`judge_grade`), the only judge available
   on the hackathon endpoint.
-- **Claude Sonnet 5.5** independently grades a seeded random 20% of the `swiss_context` responses.
+- **Claude Sonnet 5.5** independently grades a seeded random 20% of the `swiss_context` responses of each item
+  kind.
+- For the edge cases, both Claude graders also received the paragraph in `data/grader/edge_addendum.txt`, which says
+  how an "it depends" or a correction counts; the Apertus judge uses the unchanged prompt for every item.
 
 {agreement}
 
@@ -172,17 +196,21 @@ the primary grades come from {primary}.
 
 #### Annotator Details
 
-All reviewers, adjudicators and graders are AI models: Claude Opus 5.5, Claude Sonnet 5.5 and Claude Fable 5.1
+All drafters, reviewers, adjudicators and graders are AI models: Claude Opus 5.5, Claude Sonnet 5.5 and Claude Fable 5.1
 (Anthropic), and Apertus 1.5 70B (Swiss AI Initiative). The guidelines, the outcome rule and the grading setup were
 written by the team with an AI coding assistant.
 
 ## Evaluation Results
 
-Graded by {primary}:
+Regular fact items ({regular_items}), graded by {primary}:
 
 {results}
 
-Graded by the Apertus 70B judge, for comparison:
+By item kind, in the `{config.main_condition}` condition:
+
+{kind_results}
+
+Regular fact items graded by the Apertus 70B judge, for comparison:
 
 {judge_results}
 

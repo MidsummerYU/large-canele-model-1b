@@ -24,9 +24,15 @@ A newcomer to Switzerland must register with the commune soon after arriving, ta
 
 ## Dataset Summary
 
-Each item is a single-turn question with one short factual answer (deadline, amount, age, number, office, document or yes/no) that holds everywhere in Switzerland, is stated explicitly on the cited ch.ch page, and is written in the page's language in our own words. The {items} items cover {topics} topics and come from {pages} pages (one seed page per subject plus its official French, Italian and English versions), so every language has its own questions about the same procedures:
+Each regular item is a single-turn question with one short factual answer (deadline, amount, age, number, office, document or yes/no) that holds everywhere in Switzerland, is stated explicitly on the cited ch.ch page, and is written in the page's language in our own words. The {items} items cover {topics} topics and come from {pages} pages (one seed page per subject plus its official French, Italian and English versions), so every language has its own questions about the same procedures:
 
 {composition}
+
+{edge_items} items are edge cases, where the right answer is not a fact but a qualification:
+
+{edge_composition}
+
+*cantonal* items ask as if there were one national rule where the page says it depends on the canton or commune; *false_premise* items take a wrong deadline, amount or obligation for granted, and the reference answer corrects it.
 
 Items list {answers_mean:.1f} accepted answers on average (wording, units and number formats); {tags[dated]} are tagged `dated` because the amount is revised over time. Metadata give each item's source URL, the page's modification date, the date it was checked ({fetched_from}), the review votes and the licence.
 
@@ -36,6 +42,7 @@ Items list {answers_mean:.1f} accepted answers on average (wording, units and nu
 2. **Three blind AI reviews.** {reviewers} each judged all {candidates} candidates as keep, edit or drop against our annotation guidelines (`docs/annotation-guidelines.md`: a newcomer would ask it, it stands alone, one short answer, stated explicitly in the passage, valid in every canton, every variant correct on its own). The drafting model never reviews. Agreement: Fleiss' kappa {kappa:.3f}.
 3. **Outcome rule and adjudication.** Unanimous keep: kept ({consensus[keep]}); majority drop: removed ({consensus[drop]}); everything else ({consensus[adjudicate]}) went to Claude Opus 5.5, which re-checked the passage and wrote the final item ({adjudication[edit]} edited, {adjudication[keep]} kept, {adjudication[drop]} dropped), so that one reviewer who spots an error is not outvoted.
 4. **Automatic checks.** The question must be in its page's language (py3langid) and must not copy {max_copied_words} or more consecutive words from the passage; {reworded} questions were reworded.
+5. **Edge cases.** Claude Opus 5.5 drafted cantonal items from the {edge[cantonal][sources]} passages that say a rule varies by canton or commune, and false-premise items from {edge[false_premise][sources]} regular items sampled evenly across topics; Claude Sonnet 5.5 reviewed each draft blind against the passage and kept {edge_items}. French has fewer cantonal items: several French passages say a rule varies "case by case", not by canton.
 
 No human reviewed the items one by one, and no people took part as subjects; no consent was required. A consent form for future human graders is in `docs/annotator-consent-template.md`. Every vote and outcome, including the dropped candidates, is published in `review_log.jsonl`.
 
@@ -74,6 +81,12 @@ Answers: temperature {config.answer.temperature}, at most {config.answer.max_tok
 
 Both models answer wrongly far more often than they decline: with the country stated, the 70B model is wrong on {s[70B/swiss_context][all][all][incorrect]:.0%} of the items and declines {s[70B/swiss_context][all][all][not_attempted]:.0%}; the 8B model is wrong on {s[8B/swiss_context][all][all][incorrect]:.0%}. For a newcomer, a confident wrong deadline is worse than "I don't know".
 
+By item kind (country stated):
+
+{kind_results}
+
+The two kinds of edge case split sharply. When a rule depends on the canton, the 70B model says so in {k[70B/swiss_context][kind][cantonal][correct]:.0%} of the items, but this is partly a habit: it also says a rule differs by canton in {hedge[70B]:.0%} of its replies to regular facts, which are national. When the question rests on a false premise, it rejects the premise in only {k[70B/swiss_context][kind][false_premise][correct]:.0%} and goes along with it in {k[70B/swiss_context][kind][false_premise][incorrect]:.0%} (8B: {k[8B/swiss_context][kind][false_premise][incorrect]:.0%}): a newcomer who already believes a wrong deadline or amount is likely to have it confirmed.
+
 ![Effect of stating the country](docs/figures/context_effect.svg)
 
 *Figure 2. Correct answers per language with and without "I live in Switzerland."*
@@ -90,7 +103,7 @@ Graded by itself, Apertus would look much better: the judge reports {j[70B/swiss
 
 - **AI-only curation and grading.** Models drafted, reviewed, adjudicated and graded the items; the agreement figures bound but do not remove shared errors. There is no human judge–grader agreement.
 - **Closed-model primary grader.** Results for new models need either the same offline grading or the Apertus judge with the bias shown above.
-- **Coverage.** {topics} topics, national rules only (cantonal answers excluded), no Romansh or Swiss German, one snapshot of the rules ({fetched_from}).
+- **Coverage.** {topics} topics; cantonal rules appear only as "it depends" edge cases, not with each canton's answer; no Romansh or Swiss German; one snapshot of the rules ({fetched_from}).
 - **Contamination.** ch.ch is public and likely in Apertus's training crawl; the questions are new text but the facts are not, so the set measures recall of official public information.
 - **Generator bias.** Apertus drafted the questions; the reviewers and the primary grader are a different model family.
 
@@ -98,7 +111,7 @@ Graded by itself, Apertus would look much better: the judge reports {j[70B/swiss
 
 - **Do not let the model grade itself.** The Apertus judge put the 70B model's error rate at {j[70B/swiss_context][all][all][incorrect]:.0%} instead of {s[70B/swiss_context][all][all][incorrect]:.0%}; a second, independent grader on a sample is cheap and changes the conclusion.
 - **State the context the user has.** Without "I live in Switzerland" the benchmark partly measures which country the model assumes, which differs by language.
-- **Next for the dataset:** cantonal and false-premise items (where the right answer is "it depends on your canton" or a correction), a human check of a sample of grades, and a dated re-fetch to track rule changes.
+- **Next for the dataset:** more edge cases (rules that changed recently, questions ch.ch does not answer), a human check of a sample of grades, cantonal ground truth for the largest cantons, and a dated re-fetch to track rule changes.
 - **For Apertus:** prefer "I don't know" or a pointer to the competent office over a guessed figure; in a Swiss deployment, assume Swiss rules in English as it already does in German and French; align with ch.ch-style official information, which is freely readable.
 
 ## Reproducibility

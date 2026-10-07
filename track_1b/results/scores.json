@@ -106,6 +106,17 @@
           "accuracy_given_attempted": 0.5277777777777778,
           "f1": 0.5277777777777778
         }
+      },
+      "kind": {
+        "fact": {
+          "n": 329,
+          "correct": 0.41641337386018235,
+          "incorrect": 0.48024316109422494,
+          "not_attempted": 0.1033434650455927,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4644067796610169,
+          "f1": 0.4391025641025641
+        }
       }
     },
     "70B/swiss_context": {
@@ -212,6 +223,17 @@
           "ungraded": 0.0,
           "accuracy_given_attempted": 0.6285714285714286,
           "f1": 0.619718309859155
+        }
+      },
+      "kind": {
+        "fact": {
+          "n": 329,
+          "correct": 0.5562310030395137,
+          "incorrect": 0.3890577507598784,
+          "not_attempted": 0.0547112462006079,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5884244372990354,
+          "f1": 0.5718750000000001
         }
       }
     },
@@ -320,6 +342,17 @@
           "accuracy_given_attempted": 0.5882352941176471,
           "f1": 0.5714285714285715
         }
+      },
+      "kind": {
+        "fact": {
+          "n": 329,
+          "correct": 0.3799392097264438,
+          "incorrect": 0.46200607902735563,
+          "not_attempted": 0.1580547112462006,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.45126353790613716,
+          "f1": 0.41254125412541254
+        }
       }
     },
     "70B/as_asked": {
@@ -426,6 +459,17 @@
           "ungraded": 0.0,
           "accuracy_given_attempted": 0.5757575757575757,
           "f1": 0.5507246376811594
+        }
+      },
+      "kind": {
+        "fact": {
+          "n": 329,
+          "correct": 0.46200607902735563,
+          "incorrect": 0.44072948328267475,
+          "not_attempted": 0.0972644376899696,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5117845117845118,
+          "f1": 0.4856230031948882
         }
       }
     }
@@ -536,6 +580,17 @@
           "accuracy_given_attempted": 0.8181818181818182,
           "f1": 0.7826086956521738
         }
+      },
+      "kind": {
+        "fact": {
+          "n": 329,
+          "correct": 0.5531914893617021,
+          "incorrect": 0.23404255319148937,
+          "not_attempted": 0.2127659574468085,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7027027027027027,
+          "f1": 0.6190476190476191
+        }
       }
     },
     "70B/swiss_context": {
@@ -642,6 +697,17 @@
           "ungraded": 0.0,
           "accuracy_given_attempted": 0.9032258064516129,
           "f1": 0.835820895522388
+        }
+      },
+      "kind": {
+        "fact": {
+          "n": 329,
+          "correct": 0.6960486322188449,
+          "incorrect": 0.13069908814589665,
+          "not_attempted": 0.17325227963525835,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8419117647058824,
+          "f1": 0.762063227953411
         }
       }
     },
@@ -750,6 +816,17 @@
           "accuracy_given_attempted": 0.7575757575757576,
           "f1": 0.7246376811594203
         }
+      },
+      "kind": {
+        "fact": {
+          "n": 329,
+          "correct": 0.48328267477203646,
+          "incorrect": 0.303951367781155,
+          "not_attempted": 0.2127659574468085,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6138996138996139,
+          "f1": 0.5408163265306123
+        }
       }
     },
     "70B/as_asked": {
@@ -857,50 +934,608 @@
           "accuracy_given_attempted": 0.8181818181818182,
           "f1": 0.7826086956521738
         }
+      },
+      "kind": {
+        "fact": {
+          "n": 329,
+          "correct": 0.6170212765957447,
+          "incorrect": 0.1884498480243161,
+          "not_attempted": 0.1945288753799392,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.7660377358490567,
+          "f1": 0.6835016835016835
+        }
+      }
+    }
+  },
+  "kind_scores": {
+    "8B/swiss_context": {
+      "all": {
+        "all": {
+          "n": 381,
+          "correct": 0.4225721784776903,
+          "incorrect": 0.48556430446194226,
+          "not_attempted": 0.09186351706036745,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4653179190751445,
+          "f1": 0.44291609353507566
+        }
+      },
+      "lang": {
+        "de": {
+          "n": 97,
+          "correct": 0.41237113402061853,
+          "incorrect": 0.5360824742268041,
+          "not_attempted": 0.05154639175257732,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.43478260869565216,
+          "f1": 0.42328042328042326
+        },
+        "en": {
+          "n": 97,
+          "correct": 0.3402061855670103,
+          "incorrect": 0.5463917525773195,
+          "not_attempted": 0.1134020618556701,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.38372093023255816,
+          "f1": 0.36065573770491804
+        },
+        "fr": {
+          "n": 90,
+          "correct": 0.4111111111111111,
+          "incorrect": 0.4888888888888889,
+          "not_attempted": 0.1,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.45679012345679015,
+          "f1": 0.43274853801169594
+        },
+        "it": {
+          "n": 97,
+          "correct": 0.5257731958762887,
+          "incorrect": 0.3711340206185567,
+          "not_attempted": 0.10309278350515463,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5862068965517241,
+          "f1": 0.5543478260869564
+        }
+      },
+      "topic": {
+        "health_insurance": {
+          "n": 64,
+          "correct": 0.40625,
+          "incorrect": 0.546875,
+          "not_attempted": 0.046875,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4262295081967213,
+          "f1": 0.4159999999999999
+        },
+        "naturalisation": {
+          "n": 47,
+          "correct": 0.2978723404255319,
+          "incorrect": 0.44680851063829785,
+          "not_attempted": 0.2553191489361702,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4,
+          "f1": 0.34146341463414637
+        },
+        "pension": {
+          "n": 94,
+          "correct": 0.4148936170212766,
+          "incorrect": 0.4787234042553192,
+          "not_attempted": 0.10638297872340426,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4642857142857143,
+          "f1": 0.43820224719101125
+        },
+        "registration": {
+          "n": 29,
+          "correct": 0.3448275862068966,
+          "incorrect": 0.4827586206896552,
+          "not_attempted": 0.1724137931034483,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.41666666666666663,
+          "f1": 0.3773584905660377
+        },
+        "residence_permit": {
+          "n": 98,
+          "correct": 0.4489795918367347,
+          "incorrect": 0.5,
+          "not_attempted": 0.05102040816326531,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.47311827956989244,
+          "f1": 0.4607329842931937
+        },
+        "withholding_tax": {
+          "n": 49,
+          "correct": 0.5714285714285714,
+          "incorrect": 0.42857142857142855,
+          "not_attempted": 0.0,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5714285714285714,
+          "f1": 0.5714285714285714
+        }
+      },
+      "kind": {
+        "cantonal": {
+          "n": 23,
+          "correct": 0.9130434782608695,
+          "incorrect": 0.08695652173913043,
+          "not_attempted": 0.0,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.9130434782608695,
+          "f1": 0.9130434782608695
+        },
+        "fact": {
+          "n": 329,
+          "correct": 0.41641337386018235,
+          "incorrect": 0.48024316109422494,
+          "not_attempted": 0.1033434650455927,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4644067796610169,
+          "f1": 0.4391025641025641
+        },
+        "false_premise": {
+          "n": 29,
+          "correct": 0.10344827586206896,
+          "incorrect": 0.8620689655172413,
+          "not_attempted": 0.034482758620689655,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.10714285714285715,
+          "f1": 0.10526315789473685
+        }
+      }
+    },
+    "70B/swiss_context": {
+      "all": {
+        "all": {
+          "n": 381,
+          "correct": 0.5538057742782152,
+          "incorrect": 0.3963254593175853,
+          "not_attempted": 0.049868766404199474,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5828729281767956,
+          "f1": 0.5679676985195153
+        }
+      },
+      "lang": {
+        "de": {
+          "n": 97,
+          "correct": 0.5257731958762887,
+          "incorrect": 0.422680412371134,
+          "not_attempted": 0.05154639175257732,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5543478260869565,
+          "f1": 0.5396825396825398
+        },
+        "en": {
+          "n": 97,
+          "correct": 0.5670103092783505,
+          "incorrect": 0.3917525773195876,
+          "not_attempted": 0.041237113402061855,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5913978494623656,
+          "f1": 0.5789473684210525
+        },
+        "fr": {
+          "n": 90,
+          "correct": 0.5444444444444444,
+          "incorrect": 0.4111111111111111,
+          "not_attempted": 0.044444444444444446,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5697674418604651,
+          "f1": 0.5568181818181818
+        },
+        "it": {
+          "n": 97,
+          "correct": 0.5773195876288659,
+          "incorrect": 0.36082474226804123,
+          "not_attempted": 0.061855670103092786,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6153846153846153,
+          "f1": 0.5957446808510638
+        }
+      },
+      "topic": {
+        "health_insurance": {
+          "n": 64,
+          "correct": 0.484375,
+          "incorrect": 0.46875,
+          "not_attempted": 0.046875,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5081967213114754,
+          "f1": 0.496
+        },
+        "naturalisation": {
+          "n": 47,
+          "correct": 0.40425531914893614,
+          "incorrect": 0.40425531914893614,
+          "not_attempted": 0.19148936170212766,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5,
+          "f1": 0.44705882352941173
+        },
+        "pension": {
+          "n": 94,
+          "correct": 0.574468085106383,
+          "incorrect": 0.3723404255319149,
+          "not_attempted": 0.05319148936170213,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6067415730337079,
+          "f1": 0.5901639344262296
+        },
+        "registration": {
+          "n": 29,
+          "correct": 0.41379310344827586,
+          "incorrect": 0.5862068965517241,
+          "not_attempted": 0.0,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.41379310344827586,
+          "f1": 0.41379310344827586
+        },
+        "residence_permit": {
+          "n": 98,
+          "correct": 0.6428571428571429,
+          "incorrect": 0.3469387755102041,
+          "not_attempted": 0.01020408163265306,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6494845360824743,
+          "f1": 0.6461538461538462
+        },
+        "withholding_tax": {
+          "n": 49,
+          "correct": 0.6530612244897959,
+          "incorrect": 0.32653061224489793,
+          "not_attempted": 0.02040816326530612,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.6666666666666666,
+          "f1": 0.6597938144329897
+        }
+      },
+      "kind": {
+        "cantonal": {
+          "n": 23,
+          "correct": 0.9565217391304348,
+          "incorrect": 0.043478260869565216,
+          "not_attempted": 0.0,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.9565217391304348,
+          "f1": 0.9565217391304348
+        },
+        "fact": {
+          "n": 329,
+          "correct": 0.5562310030395137,
+          "incorrect": 0.3890577507598784,
+          "not_attempted": 0.0547112462006079,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5884244372990354,
+          "f1": 0.5718750000000001
+        },
+        "false_premise": {
+          "n": 29,
+          "correct": 0.20689655172413793,
+          "incorrect": 0.7586206896551724,
+          "not_attempted": 0.034482758620689655,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.2142857142857143,
+          "f1": 0.2105263157894737
+        }
+      }
+    },
+    "8B/as_asked": {
+      "all": {
+        "all": {
+          "n": 381,
+          "correct": 0.3779527559055118,
+          "incorrect": 0.46194225721784776,
+          "not_attempted": 0.16010498687664043,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.45,
+          "f1": 0.41084165477888734
+        }
+      },
+      "lang": {
+        "de": {
+          "n": 97,
+          "correct": 0.35051546391752575,
+          "incorrect": 0.5463917525773195,
+          "not_attempted": 0.10309278350515463,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.39080459770114945,
+          "f1": 0.3695652173913043
+        },
+        "en": {
+          "n": 97,
+          "correct": 0.35051546391752575,
+          "incorrect": 0.3711340206185567,
+          "not_attempted": 0.27835051546391754,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4857142857142857,
+          "f1": 0.40718562874251496
+        },
+        "fr": {
+          "n": 90,
+          "correct": 0.3888888888888889,
+          "incorrect": 0.5222222222222223,
+          "not_attempted": 0.08888888888888889,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4268292682926829,
+          "f1": 0.40697674418604646
+        },
+        "it": {
+          "n": 97,
+          "correct": 0.422680412371134,
+          "incorrect": 0.41237113402061853,
+          "not_attempted": 0.16494845360824742,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5061728395061729,
+          "f1": 0.46067415730337075
+        }
+      },
+      "topic": {
+        "health_insurance": {
+          "n": 64,
+          "correct": 0.390625,
+          "incorrect": 0.390625,
+          "not_attempted": 0.21875,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5,
+          "f1": 0.43859649122807015
+        },
+        "naturalisation": {
+          "n": 47,
+          "correct": 0.2765957446808511,
+          "incorrect": 0.5319148936170213,
+          "not_attempted": 0.19148936170212766,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.34210526315789475,
+          "f1": 0.3058823529411765
+        },
+        "pension": {
+          "n": 94,
+          "correct": 0.3723404255319149,
+          "incorrect": 0.46808510638297873,
+          "not_attempted": 0.1595744680851064,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4430379746835443,
+          "f1": 0.40462427745664736
+        },
+        "registration": {
+          "n": 29,
+          "correct": 0.27586206896551724,
+          "incorrect": 0.5862068965517241,
+          "not_attempted": 0.13793103448275862,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.32,
+          "f1": 0.29629629629629634
+        },
+        "residence_permit": {
+          "n": 98,
+          "correct": 0.3979591836734694,
+          "incorrect": 0.47959183673469385,
+          "not_attempted": 0.12244897959183673,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4534883720930233,
+          "f1": 0.4239130434782609
+        },
+        "withholding_tax": {
+          "n": 49,
+          "correct": 0.4897959183673469,
+          "incorrect": 0.3673469387755102,
+          "not_attempted": 0.14285714285714285,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5714285714285714,
+          "f1": 0.5274725274725275
+        }
+      },
+      "kind": {
+        "cantonal": {
+          "n": 23,
+          "correct": 0.6521739130434783,
+          "incorrect": 0.13043478260869565,
+          "not_attempted": 0.21739130434782608,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.8333333333333333,
+          "f1": 0.7317073170731707
+        },
+        "fact": {
+          "n": 329,
+          "correct": 0.3799392097264438,
+          "incorrect": 0.46200607902735563,
+          "not_attempted": 0.1580547112462006,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.45126353790613716,
+          "f1": 0.41254125412541254
+        },
+        "false_premise": {
+          "n": 29,
+          "correct": 0.13793103448275862,
+          "incorrect": 0.7241379310344828,
+          "not_attempted": 0.13793103448275862,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.16,
+          "f1": 0.14814814814814817
+        }
+      }
+    },
+    "70B/as_asked": {
+      "all": {
+        "all": {
+          "n": 381,
+          "correct": 0.44881889763779526,
+          "incorrect": 0.4461942257217848,
+          "not_attempted": 0.10498687664041995,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.501466275659824,
+          "f1": 0.47368421052631576
+        }
+      },
+      "lang": {
+        "de": {
+          "n": 97,
+          "correct": 0.41237113402061853,
+          "incorrect": 0.4639175257731959,
+          "not_attempted": 0.12371134020618557,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.47058823529411764,
+          "f1": 0.4395604395604395
+        },
+        "en": {
+          "n": 97,
+          "correct": 0.41237113402061853,
+          "incorrect": 0.44329896907216493,
+          "not_attempted": 0.14432989690721648,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.4819277108433735,
+          "f1": 0.4444444444444444
+        },
+        "fr": {
+          "n": 90,
+          "correct": 0.4888888888888889,
+          "incorrect": 0.4666666666666667,
+          "not_attempted": 0.044444444444444446,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5116279069767442,
+          "f1": 0.5
+        },
+        "it": {
+          "n": 97,
+          "correct": 0.4845360824742268,
+          "incorrect": 0.41237113402061853,
+          "not_attempted": 0.10309278350515463,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5402298850574713,
+          "f1": 0.5108695652173914
+        }
+      },
+      "topic": {
+        "health_insurance": {
+          "n": 64,
+          "correct": 0.421875,
+          "incorrect": 0.46875,
+          "not_attempted": 0.109375,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.47368421052631576,
+          "f1": 0.4462809917355372
+        },
+        "naturalisation": {
+          "n": 47,
+          "correct": 0.3404255319148936,
+          "incorrect": 0.48936170212765956,
+          "not_attempted": 0.1702127659574468,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.41025641025641024,
+          "f1": 0.37209302325581395
+        },
+        "pension": {
+          "n": 94,
+          "correct": 0.4787234042553192,
+          "incorrect": 0.44680851063829785,
+          "not_attempted": 0.07446808510638298,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5172413793103449,
+          "f1": 0.49723756906077354
+        },
+        "registration": {
+          "n": 29,
+          "correct": 0.3103448275862069,
+          "incorrect": 0.5862068965517241,
+          "not_attempted": 0.10344827586206896,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.34615384615384615,
+          "f1": 0.32727272727272727
+        },
+        "residence_permit": {
+          "n": 98,
+          "correct": 0.5102040816326531,
+          "incorrect": 0.40816326530612246,
+          "not_attempted": 0.08163265306122448,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5555555555555556,
+          "f1": 0.5319148936170212
+        },
+        "withholding_tax": {
+          "n": 49,
+          "correct": 0.4897959183673469,
+          "incorrect": 0.3673469387755102,
+          "not_attempted": 0.14285714285714285,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5714285714285714,
+          "f1": 0.5274725274725275
+        }
+      },
+      "kind": {
+        "cantonal": {
+          "n": 23,
+          "correct": 0.7391304347826086,
+          "incorrect": 0.043478260869565216,
+          "not_attempted": 0.21739130434782608,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.9444444444444445,
+          "f1": 0.8292682926829269
+        },
+        "fact": {
+          "n": 329,
+          "correct": 0.46200607902735563,
+          "incorrect": 0.44072948328267475,
+          "not_attempted": 0.0972644376899696,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.5117845117845118,
+          "f1": 0.4856230031948882
+        },
+        "false_premise": {
+          "n": 29,
+          "correct": 0.06896551724137931,
+          "incorrect": 0.8275862068965517,
+          "not_attempted": 0.10344827586206896,
+          "ungraded": 0.0,
+          "accuracy_given_attempted": 0.07692307692307693,
+          "f1": 0.07272727272727274
+        }
       }
     }
   },
   "grader_agreement": {
     "judge vs claude-opus-5-5": {
-      "n": 1316,
-      "agreement": 0.7165653495440729,
-      "cohen_kappa": 0.5414475657022644,
+      "n": 1524,
+      "agreement": 0.7178477690288714,
+      "cohen_kappa": 0.5408760571333688,
       "confusion": {
-        "correct / correct": 568,
-        "correct / incorrect": 172,
-        "correct / not_attempted": 33,
-        "incorrect / correct": 6,
-        "incorrect / incorrect": 274,
-        "incorrect / not_attempted": 2,
-        "not_attempted / correct": 23,
-        "not_attempted / incorrect": 137,
-        "not_attempted / not_attempted": 101
+        "correct / correct": 653,
+        "correct / incorrect": 206,
+        "correct / not_attempted": 40,
+        "incorrect / correct": 9,
+        "incorrect / incorrect": 330,
+        "incorrect / not_attempted": 4,
+        "not_attempted / correct": 25,
+        "not_attempted / incorrect": 146,
+        "not_attempted / not_attempted": 111
       }
     },
     "judge vs claude-sonnet-5-5": {
-      "n": 132,
-      "agreement": 0.7196969696969697,
-      "cohen_kappa": 0.5278878685355245,
+      "n": 154,
+      "agreement": 0.7272727272727273,
+      "cohen_kappa": 0.5336025382174792,
       "confusion": {
-        "correct / correct": 62,
-        "correct / incorrect": 14,
+        "correct / correct": 73,
+        "correct / incorrect": 19,
         "correct / not_attempted": 7,
         "incorrect / correct": 1,
-        "incorrect / incorrect": 23,
+        "incorrect / incorrect": 29,
         "not_attempted / correct": 3,
         "not_attempted / incorrect": 12,
         "not_attempted / not_attempted": 10
       }
     },
     "claude-opus-5-5 vs claude-sonnet-5-5": {
-      "n": 132,
-      "agreement": 0.9318181818181818,
-      "cohen_kappa": 0.8854056139673963,
+      "n": 154,
+      "agreement": 0.935064935064935,
+      "cohen_kappa": 0.888704198887042,
       "confusion": {
-        "correct / correct": 60,
+        "correct / correct": 71,
+        "correct / incorrect": 1,
         "correct / not_attempted": 1,
         "incorrect / correct": 6,
-        "incorrect / incorrect": 49,
+        "incorrect / incorrect": 59,
         "incorrect / not_attempted": 2,
         "not_attempted / not_attempted": 14
       }

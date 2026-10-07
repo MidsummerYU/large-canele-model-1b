@@ -17,11 +17,13 @@ configs:
 
 # Dataset Card for Swiss Newcomer QA
 
-329 closed-book questions in de, en, fr, it about the administrative procedures people face when they move to
+381 closed-book questions in de, en, fr, it about the administrative procedures people face when they move to
 Switzerland: registering with the commune, residence permits, health insurance, the AHV/AVS pension system,
-withholding tax and naturalisation. Every question has a short factual answer with accepted variants, valid
-everywhere in Switzerland and stated on a cited page of [ch.ch](https://www.ch.ch), the federal government's
-information portal. The dataset ships with the answers of Apertus 1.5 8B and 70B and their SimpleQA grades.
+withholding tax and naturalisation. Every question has a short reference answer with accepted variants, stated on a
+cited page of [ch.ch](https://www.ch.ch), the federal government's information portal. 329 are regular
+facts that hold everywhere in Switzerland; 52 are edge cases, where the answer depends on the canton or the
+question rests on a false premise that a careful assistant must correct. The dataset ships with the answers of Apertus 1.5 8B and 70B and
+their SimpleQA grades.
 
 ## Dataset Details
 
@@ -47,8 +49,8 @@ information portal. The dataset ships with the answers of Apertus 1.5 8B and 70B
 ### Out-of-Scope Use
 
 - Legal or administrative advice. Rules change; the answers were checked on the dates in `source_fetched_at`.
-- Cantonal or communal rules. Items whose answer depends on the canton were excluded, so the set says nothing
-  about cantonal knowledge.
+- Cantonal or communal rules. The cantonal items only test whether a model says that a rule depends on the canton;
+  the set does not contain each canton's answer.
 - Training. The set is small and meant for evaluation; training on it makes later evaluations meaningless.
 
 ### Specifications
@@ -58,7 +60,7 @@ Every item passed review against the annotation guidelines (`docs/annotation-gui
 1. a newcomer would plausibly ask it, and it names the procedure it is about;
 2. it has one short factual answer (deadline, amount, age, number, office, document, yes/no);
 3. the cited ch.ch passage states that answer explicitly;
-4. the answer holds everywhere in Switzerland;
+4. the answer holds everywhere in Switzerland (regular items) or the page says it depends on the canton (cantonal items);
 5. it is written in the language of its source page and in our own words: no 8 or more consecutive
    words are copied from the source;
 6. every accepted answer variant is correct and complete on its own.
@@ -69,13 +71,27 @@ Composition by topic and language:
 
 | topic | de | en | fr | it | all |
 |---|---|---|---|---|---|
-| health_insurance | 14 | 15 | 15 | 14 | 58 |
-| naturalisation | 8 | 8 | 7 | 7 | 30 |
-| pension | 26 | 22 | 20 | 22 | 90 |
-| registration | 5 | 7 | 6 | 7 | 25 |
-| residence_permit | 21 | 23 | 22 | 24 | 90 |
-| withholding_tax | 8 | 9 | 10 | 9 | 36 |
-| **all** | 82 | 84 | 80 | 83 | **329** |
+| health_insurance | 16 | 16 | 17 | 15 | 64 |
+| naturalisation | 13 | 12 | 10 | 12 | 47 |
+| pension | 27 | 23 | 21 | 23 | 94 |
+| registration | 6 | 8 | 7 | 8 | 29 |
+| residence_permit | 23 | 25 | 24 | 26 | 98 |
+| withholding_tax | 12 | 13 | 11 | 13 | 49 |
+| **all** | 97 | 97 | 90 | 97 | **381** |
+
+By item kind:
+
+| kind | de | en | fr | it | all |
+|---|---|---|---|---|---|
+| fact | 82 | 84 | 80 | 83 | 329 |
+| false_premise | 7 | 7 | 8 | 7 | 29 |
+| cantonal | 8 | 6 | 2 | 7 | 23 |
+
+- **fact** (329): one short answer that holds everywhere in Switzerland.
+- **cantonal** (23): asked as if there were one national answer, but the cited page says it depends on
+  the canton or commune; the reference answer says so (with the national frame where the page gives one).
+- **false_premise** (29): the question takes a wrong deadline, amount, age, obligation or office for
+  granted; the reference answer rejects the premise and states the correct fact.
 
 On average an item lists 2.8 accepted answers.
 
@@ -108,7 +124,7 @@ ch.ch between 2024-03-22 and 2026-08-31.
 
 1. **Fetch** (`make fetch`, 2026-10-06 to 2026-10-06): page text and the page's modification date. Page text is
    kept locally and never published.
-2. **Draft** (`make generate`): swiss-ai/Apertus-v1.5-70B, temperature 0.0, writes up to 10
+2. **Draft** (`make generate`): claude-opus-5-5, swiss-ai/Apertus-v1.5-70B, temperature 0.0, writes up to 10
    questions per page, each with an answer, variants and the passage it relies on, in the page's language.
 3. **Review and build**: see *Data Processing and Quality Control*.
 
@@ -142,7 +158,16 @@ procedures, not people: there are no data subjects.
    and answers: 157 edited, 4 kept, 4 dropped.
 4. **Automatic checks** (`make build-dataset`): the question must be in its page's language (py3langid), and must not
    copy 8+ consecutive words from the passage; 19 questions were reworded for the second check.
-5. **Result.** 329 items; 10 are tagged `dated` (amounts that are revised over time).
+5. **Result.** 381 items; 10 are tagged `dated` (amounts that are revised over time).
+
+6. **Edge cases.** Claude Opus 5.5 drafted one cantonal item for each of the 29 passages that say a
+   rule varies by canton or commune (it skipped 6 where the variation is not by canton or not
+   something a newcomer asks), and one false-premise item for each of 32 regular items sampled
+   evenly across topics (skipped 0). Claude Sonnet 5.5 reviewed every draft blind against the
+   passage with stricter rules (every statement of the answer stated explicitly, the premise clearly false yet
+   plausible) and dropped 0 cantonal and 3 false-premise drafts. The same
+   language and copy checks apply. French has fewer cantonal items because several French passages say a rule varies
+   "case by case", not by canton.
 
 `review_log.jsonl` records every vote and outcome, including the dropped candidates. **No item was reviewed one by
 one by a human.**
@@ -171,26 +196,29 @@ Grades follow SimpleQA (correct / incorrect / not attempted) with its unchanged 
   SimpleQA, an answer that neither confirms nor contradicts the reference (e.g. a range around it) is not attempted.
 - **Apertus 1.5 70B** grades every response inside the evaluation harness (`judge_grade`), the only judge available
   on the hackathon endpoint.
-- **Claude Sonnet 5.5** independently grades a seeded random 20% of the `swiss_context` responses.
+- **Claude Sonnet 5.5** independently grades a seeded random 20% of the `swiss_context` responses of each item
+  kind.
+- For the edge cases, both Claude graders also received the paragraph in `data/grader/edge_addendum.txt`, which says
+  how an "it depends" or a correction counts; the Apertus judge uses the unchanged prompt for every item.
 
 | comparison | n | agreement | Cohen's kappa |
 |---|---|---|---|
-| judge vs claude-opus-5-5 | 1316 | 71.7% | 0.541 |
-| judge vs claude-sonnet-5-5 | 132 | 72.0% | 0.528 |
-| claude-opus-5-5 vs claude-sonnet-5-5 | 132 | 93.2% | 0.885 |
+| judge vs claude-opus-5-5 | 1524 | 71.8% | 0.541 |
+| judge vs claude-sonnet-5-5 | 154 | 72.7% | 0.534 |
+| claude-opus-5-5 vs claude-sonnet-5-5 | 154 | 93.5% | 0.889 |
 
 The two Claude graders agree closely; the Apertus judge accepts answers that contradict the reference, which is why
 the primary grades come from claude-opus-5-5.
 
 #### Annotator Details
 
-All reviewers, adjudicators and graders are AI models: Claude Opus 5.5, Claude Sonnet 5.5 and Claude Fable 5.1
+All drafters, reviewers, adjudicators and graders are AI models: Claude Opus 5.5, Claude Sonnet 5.5 and Claude Fable 5.1
 (Anthropic), and Apertus 1.5 70B (Swiss AI Initiative). The guidelines, the outcome rule and the grading setup were
 written by the team with an AI coding assistant.
 
 ## Evaluation Results
 
-Graded by claude-opus-5-5:
+Regular fact items (329), graded by claude-opus-5-5:
 
 | model/condition | correct | incorrect | not attempted | correct given attempted | F1 |
 |---|---|---|---|---|---|
@@ -199,7 +227,18 @@ Graded by claude-opus-5-5:
 | 8B/as_asked | 38.0% | 46.2% | 15.8% | 45.1% | 0.413 |
 | 70B/as_asked | 46.2% | 44.1% | 9.7% | 51.2% | 0.486 |
 
-Graded by the Apertus 70B judge, for comparison:
+By item kind, in the `swiss_context` condition:
+
+| model/condition | kind | n | correct | incorrect | not attempted |
+|---|---|---|---|---|---|
+| 8B/swiss_context | cantonal | 23 | 91.3% | 8.7% | 0.0% |
+| 8B/swiss_context | fact | 329 | 41.6% | 48.0% | 10.3% |
+| 8B/swiss_context | false_premise | 29 | 10.3% | 86.2% | 3.4% |
+| 70B/swiss_context | cantonal | 23 | 95.7% | 4.3% | 0.0% |
+| 70B/swiss_context | fact | 329 | 55.6% | 38.9% | 5.5% |
+| 70B/swiss_context | false_premise | 29 | 20.7% | 75.9% | 3.4% |
+
+Regular fact items graded by the Apertus 70B judge, for comparison:
 
 | model/condition | correct | incorrect | not attempted | correct given attempted | F1 |
 |---|---|---|---|---|---|

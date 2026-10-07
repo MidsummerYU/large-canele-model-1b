@@ -6,9 +6,9 @@ SimpleQA grades by `claude-opus-5-5` (see data/eval.yaml).
 
 | comparison | n | agreement | Cohen's kappa |
 |---|---|---|---|
-| judge vs claude-opus-5-5 | 1316 | 71.7% | 0.541 |
-| judge vs claude-sonnet-5-5 | 132 | 72.0% | 0.528 |
-| claude-opus-5-5 vs claude-sonnet-5-5 | 132 | 93.2% | 0.885 |
+| judge vs claude-opus-5-5 | 1524 | 71.8% | 0.541 |
+| judge vs claude-sonnet-5-5 | 154 | 72.7% | 0.534 |
+| claude-opus-5-5 vs claude-sonnet-5-5 | 154 | 93.5% | 0.889 |
 
 ## Overall as graded by the in-harness Apertus judge, for comparison
 
@@ -18,6 +18,25 @@ SimpleQA grades by `claude-opus-5-5` (see data/eval.yaml).
 | 70B/swiss_context | 69.6% | 13.1% | 17.3% | 84.2% | 0.762 |
 | 8B/as_asked | 48.3% | 30.4% | 21.3% | 61.4% | 0.541 |
 | 70B/as_asked | 61.7% | 18.8% | 19.5% | 76.6% | 0.684 |
+
+## By item kind (regular facts and edge cases)
+
+| model/condition | kind | n | correct | incorrect | not attempted |
+|---|---|---|---|---|---|
+| 8B/swiss_context | cantonal | 23 | 91.3% | 8.7% | 0.0% |
+| 8B/swiss_context | fact | 329 | 41.6% | 48.0% | 10.3% |
+| 8B/swiss_context | false_premise | 29 | 10.3% | 86.2% | 3.4% |
+| 70B/swiss_context | cantonal | 23 | 95.7% | 4.3% | 0.0% |
+| 70B/swiss_context | fact | 329 | 55.6% | 38.9% | 5.5% |
+| 70B/swiss_context | false_premise | 29 | 20.7% | 75.9% | 3.4% |
+| 8B/as_asked | cantonal | 23 | 65.2% | 13.0% | 21.7% |
+| 8B/as_asked | fact | 329 | 38.0% | 46.2% | 15.8% |
+| 8B/as_asked | false_premise | 29 | 13.8% | 72.4% | 13.8% |
+| 70B/as_asked | cantonal | 23 | 73.9% | 4.3% | 21.7% |
+| 70B/as_asked | fact | 329 | 46.2% | 44.1% | 9.7% |
+| 70B/as_asked | false_premise | 29 | 6.9% | 82.8% | 10.3% |
+
+# Regular fact items
 
 ## Overall
 

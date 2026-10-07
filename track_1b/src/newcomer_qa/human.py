@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from newcomer_qa.client import ChatRequest, Mode, RecordingClient
 from newcomer_qa.config import Settings
+from newcomer_qa.edge import FACT_KIND
 from newcomer_qa.evaluate import EvalConfig, Response, gold_target, load_grades, load_test_cases
 
 TRANSLATE_PROMPT = "Translate into English. Reply with the translation only.\n\n{text}"
@@ -22,13 +23,23 @@ class SampleItem(BaseModel):
     translation: dict[str, str] | None
 
 
-def sample(responses: list[Response], share: float, seed: int) -> list[Response]:
-    """A seeded random share of each model's judgements, so judges can draw the same sample."""
+def _sample_models(responses: list[Response], share: float, seed: int) -> list[Response]:
     rng = random.Random(seed)
     picked = []
     for model in sorted({r.model for r in responses}):
         rows = [r for r in responses if r.model == model]
         picked += rng.sample(rows, round(share * len(rows)))
+    return picked
+
+
+def sample(responses: list[Response], share: float, seed: int) -> list[Response]:
+    """A seeded random share of each model's judgements per item kind, so judges can draw the same sample.
+
+    Each kind is sampled on its own, so adding edge cases leaves the sample of the regular items unchanged.
+    """
+    picked = []
+    for kind in sorted({r.kind for r in responses}, key=lambda k: k != FACT_KIND):
+        picked += _sample_models([r for r in responses if r.kind == kind], share, seed)
     return picked
 
 

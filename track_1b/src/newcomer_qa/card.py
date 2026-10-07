@@ -6,6 +6,7 @@ from statistics import mean
 from newcomer_qa.build import Metadata, ReviewLogEntry, TestCase
 from newcomer_qa.config import Settings
 from newcomer_qa.consensus import fleiss_kappa
+from newcomer_qa.edge import EDGE_KINDS, EDGE_PREFIX, FACT_KIND
 from newcomer_qa.evaluate import EvalConfig, load_test_cases
 
 
@@ -28,6 +29,24 @@ def _composition(cases: list[TestCase]) -> str:
     return _table(["topic", *languages, "all"], rows)
 
 
+def _kind_composition(cases: list[TestCase], kinds: dict[str, str]) -> str:
+    languages = sorted({c.lang for c in cases})
+    counts = Counter((kinds[c.item_id], c.lang) for c in cases)
+    rows = [[kind, *(counts[kind, lang] for lang in languages), sum(counts[kind, lang] for lang in languages)]
+            for kind in sorted({*kinds.values()}, key=lambda k: k != FACT_KIND)]
+    return _table(["kind", *languages, "all"], rows)
+
+
+def _kind_results(scores: dict, key: str, condition: str) -> str:
+    rows = []
+    for name, by_field in scores[key].items():
+        if not name.endswith(f"/{condition}"):
+            continue
+        for kind, s in scores["kind_scores"][name]["kind"].items():
+            rows.append([name, kind, s["n"], f"{s['correct']:.1%}", f"{s['incorrect']:.1%}", f"{s['not_attempted']:.1%}"])
+    return _table(["model/condition", "kind", "n", "correct", "incorrect", "not attempted"], rows)
+
+
 def _results(scores: dict, key: str) -> str:
     rows = []
     for name, by_field in scores[key].items():
@@ -45,7 +64,10 @@ def _agreement(scores: dict) -> str:
 def card_context(settings: Settings) -> dict:
     cases = load_test_cases(settings.dataset_dir / "test_cases.jsonl")
     metadata = _jsonl(settings.dataset_dir / "metadata.jsonl", Metadata)
-    log = _jsonl(settings.dataset_dir / "review_log.jsonl", ReviewLogEntry)
+    full_log = _jsonl(settings.dataset_dir / "review_log.jsonl", ReviewLogEntry)
+    log = [e for e in full_log if not e.candidate_id.startswith(EDGE_PREFIX)]
+    edge_log = [e for e in full_log if e.candidate_id.startswith(EDGE_PREFIX)]
+    kinds = {m.item_id: next((t for t in m.tags if t in EDGE_KINDS.values()), FACT_KIND) for m in metadata}
     scores = json.loads((settings.results_dir / "scores.json").read_text(encoding="utf-8"))
     config = EvalConfig.load(settings.eval_config)
     reviewers = sorted(log[0].review_votes)
@@ -53,8 +75,21 @@ def card_context(settings: Settings) -> dict:
     adjudication = Counter(e.adjudication for e in log if e.adjudication)
     fetched = sorted(m.source_fetched_at.date().isoformat() for m in metadata)
     modified = sorted(m.source_modified_at.date().isoformat() for m in metadata if m.source_modified_at)
+    edge = {
+        kind: {
+            "sources": sum(e.candidate_id.startswith(f"{EDGE_PREFIX}{kind}-") for e in edge_log),
+            "skipped": sum(e.candidate_id.startswith(f"{EDGE_PREFIX}{kind}-") and e.consensus == "skip" for e in edge_log),
+            "dropped": sum(e.candidate_id.startswith(f"{EDGE_PREFIX}{kind}-") and e.consensus == "drop" for e in edge_log),
+            "kept": sum(kinds[c.item_id] == kind for c in cases),
+        }
+        for kind in EDGE_KINDS.values()
+    }
     return {
         "items": len(cases),
+        "regular_items": sum(kinds[c.item_id] == FACT_KIND for c in cases),
+        "edge": edge,
+        "edge_items": sum(e["kept"] for e in edge.values()),
+        "edge_composition": _kind_composition(cases, kinds),
         "languages": ", ".join(sorted({c.lang for c in cases})),
         "topics": len({c.topic for c in cases}),
         "composition": _composition(cases),
@@ -79,11 +114,13 @@ def card_context(settings: Settings) -> dict:
         "config": config,
         "primary": scores["primary_grader"],
         "results": _results(scores, "scores"),
+        "kind_results": _kind_results(scores, "scores", config.main_condition),
         "judge_results": _results(scores, "judge_scores"),
         "agreement": _agreement(scores),
         "a": scores["grader_agreement"],
         "hf_repo": settings.hf_repo,
         "s": scores["scores"],
+        "k": scores["kind_scores"],
         "j": scores["judge_scores"],
     }
 

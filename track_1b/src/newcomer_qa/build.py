@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from newcomer_qa.config import Settings
 from newcomer_qa.chch import strip_format_characters
 from newcomer_qa.consensus import Consensus, Review, load_reviews
+from newcomer_qa.edge import load_edge_candidates
 from newcomer_qa.fetch import StoredPage, page_path
 from newcomer_qa.generate import Candidate
 from newcomer_qa.review import load_candidates
@@ -123,6 +124,32 @@ def build_dataset(settings: Settings) -> None:
             drafted_by=candidate.generator_model, review_votes=outcome.votes,
             adjudicated=outcome.outcome == "adjudicate", final_decision=review.decision,
             question_reworded=candidate.candidate_id in rewrites,
+        ))
+
+    # Edge cases come after the regular items, so adding them leaves the order of everything before unchanged.
+    for edge in load_edge_candidates(settings):
+        src = edge.source
+        page = StoredPage.model_validate_json(page_path(settings.raw_dir, src.lang, src.page_id).read_text(encoding="utf-8"))
+        log.append(ReviewLogEntry(
+            candidate_id=edge.item_id, lang=src.lang, topic=src.topic, source_url=src.url,
+            review_votes={settings.edge_reviewer: edge.review.decision} if edge.review else {},
+            consensus=edge.review.decision if edge.review else edge.draft.decision, adjudication=None,
+            in_dataset=edge.accepted,
+        ))
+        if not edge.accepted:
+            continue
+        question = edge.draft.question
+        if py3langid.classify(question)[0] != src.lang:
+            problems["question language differs from the page"] += 1
+        if longest_copied_run(question, src.passage) >= settings.max_copied_words:
+            problems[f"question copies {settings.max_copied_words}+ words from the source"] += 1
+        answers = list(dict.fromkeys(a.strip() for a in [edge.draft.answer, *edge.draft.variants] if a.strip()))
+        cases.append(TestCase(item_id=edge.item_id, lang=src.lang, topic=src.topic, question=question, answers=answers))
+        metadata.append(Metadata(
+            item_id=edge.item_id, source_url=src.url, source_modified_at=page.page.modified_at,
+            source_fetched_at=page.fetched_at, source_publisher=settings.source_publisher, license=settings.dataset_license,
+            tags=[edge.kind], drafted_by=settings.edge_drafter, review_votes={settings.edge_reviewer: "keep"},
+            adjudicated=False, final_decision="keep", question_reworded=False,
         ))
 
     settings.dataset_dir.mkdir(parents=True, exist_ok=True)
