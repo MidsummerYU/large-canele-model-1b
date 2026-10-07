@@ -5,7 +5,7 @@
 **Track:** Apertus Readiness - Track 1B (Swiss Voices, core task intelligence)  
 **Event:** Online  
 **Team:** Large Canelé Model — Yumeng Ye  
-**Demo:** `make run` replays every model call and rebuilds the scores, figures, dataset card and this report; dataset: https://huggingface.co/datasets/MidsummerYU/swiss-newcomer-qa
+**Demo:** `make run` replays every model call and rebuilds the scores, figures, dataset card and this report; dataset: https://huggingface.co/datasets/YuYuYE/swiss-newcomer-qa
 
 ----
 
@@ -49,7 +49,7 @@ No human reviewed the items one by one, and no people took part as subjects; no 
 
 ## Dataset Details
 
-- **Hugging Face:** https://huggingface.co/datasets/MidsummerYU/swiss-newcomer-qa (card generated from the data, `docs/dataset_card.md`)
+- **Hugging Face:** https://huggingface.co/datasets/YuYuYE/swiss-newcomer-qa (card generated from the data, `docs/dataset_card.md`)
 - **Licence:** questions, answers, metadata, responses and grades under CDLA-Permissive-2.0; each metadata line carries its licence.
 - **Copyright of the source:** ch.ch text is © Swiss Federal Chancellery and is not reproduced; we publish facts, our own wording and links. The copy check above enforces this.
 - **Personal data:** none; the items describe procedures, not people.

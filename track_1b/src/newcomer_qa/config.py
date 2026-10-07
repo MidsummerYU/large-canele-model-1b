@@ -56,7 +56,7 @@ class Settings(BaseSettings):
     card: Path = TRACK_DIR / "docs" / "dataset_card.md"
     # Folder uploaded to the Hugging Face dataset repository; rebuilt by `make hf`, not committed.
     hf_dir: Path = TRACK_DIR / "hf"
-    hf_repo: str = "MidsummerYU/swiss-newcomer-qa"
+    hf_repo: str = "YuYuYE/swiss-newcomer-qa"
     figures_dir: Path = TRACK_DIR / "docs" / "figures"
     report_template: Path = TRACK_DIR / "docs" / "technical_report.template.md"
     report_path: Path = TRACK_DIR / "technical_report.md"
