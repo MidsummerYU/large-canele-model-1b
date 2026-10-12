@@ -206,6 +206,8 @@ Regular fact items ({regular_items}), graded by {primary}:
 
 {results}
 
+In brackets: {confidence:.0%} Wilson interval over the items.
+
 By item kind, in the `{config.main_condition}` condition:
 
 {kind_results}

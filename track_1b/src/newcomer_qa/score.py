@@ -1,6 +1,8 @@
 import json
+import math
 from collections import defaultdict
 from pathlib import Path
+from statistics import NormalDist
 
 from pydantic import BaseModel
 
@@ -8,10 +10,23 @@ from newcomer_qa.edge import FACT_KIND
 from newcomer_qa.evaluate import Grade, Response
 
 
+CONFIDENCE = 0.95
+
+
+def wilson_interval(share: float, n: int, confidence: float = CONFIDENCE) -> tuple[float, float]:
+    """Wilson score interval of a proportion; stays inside [0, 1] for small n and shares near 0 or 1."""
+    z = NormalDist().inv_cdf((1 + confidence) / 2)
+    centre = (share + z * z / (2 * n)) / (1 + z * z / n)
+    half = z / (1 + z * z / n) * math.sqrt(share * (1 - share) / n + z * z / (4 * n * n))
+    return centre - half, centre + half
+
+
 class Scores(BaseModel):
     n: int
     correct: float
+    correct_interval: tuple[float, float]
     incorrect: float
+    incorrect_interval: tuple[float, float]
     not_attempted: float
     ungraded: float
     accuracy_given_attempted: float
@@ -32,6 +47,8 @@ def scores(grades: list[Grade | None]) -> Scores:
     return Scores(
         n=n,
         **share,
+        correct_interval=wilson_interval(share["correct"], n),
+        incorrect_interval=wilson_interval(share["incorrect"], n),
         ungraded=sum(g is None for g in grades) / n,
         accuracy_given_attempted=given_attempted,
         f1=f1,

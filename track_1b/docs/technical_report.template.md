@@ -79,11 +79,15 @@ Answers: temperature {config.answer.temperature}, at most {config.answer.max_tok
 
 {results}
 
+In brackets: {confidence:.0%} Wilson interval over the items.
+
 Both models answer wrongly far more often than they decline: with the country stated, the 70B model is wrong on {s[70B/swiss_context][all][all][incorrect]:.0%} of the items and declines {s[70B/swiss_context][all][all][not_attempted]:.0%}; the 8B model is wrong on {s[8B/swiss_context][all][all][incorrect]:.0%}. For a newcomer, a confident wrong deadline is worse than "I don't know".
 
 By item kind (country stated):
 
 {kind_results}
+
+The edge-case sets are small, so their intervals are wide: their direction, not the exact percentage, is the finding.
 
 The two kinds of edge case split sharply. When a rule depends on the canton, the 70B model says so in {k[70B/swiss_context][kind][cantonal][correct]:.0%} of the items, but this is partly a habit: it also says a rule differs by canton in {hedge[70B]:.0%} of its replies to regular facts, which are national. When the question rests on a false premise, it rejects the premise in only {k[70B/swiss_context][kind][false_premise][correct]:.0%} and goes along with it in {k[70B/swiss_context][kind][false_premise][incorrect]:.0%} (8B: {k[8B/swiss_context][kind][false_premise][incorrect]:.0%}): a newcomer who already believes a wrong deadline or amount is likely to have it confirmed.
 

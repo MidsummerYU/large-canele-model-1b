@@ -95,10 +95,12 @@ Answers: temperature 0.0, at most 512 tokens, one sample per item and condition.
 
 | model/condition | correct | incorrect | not attempted | correct given attempted | F1 |
 |---|---|---|---|---|---|
-| 8B/swiss_context | 41.6% | 48.0% | 10.3% | 46.4% | 0.439 |
-| 70B/swiss_context | 55.6% | 38.9% | 5.5% | 58.8% | 0.572 |
-| 8B/as_asked | 38.0% | 46.2% | 15.8% | 45.1% | 0.413 |
-| 70B/as_asked | 46.2% | 44.1% | 9.7% | 51.2% | 0.486 |
+| 8B/swiss_context | 41.6% [36.4%, 47.0%] | 48.0% [42.7%, 53.4%] | 10.3% | 46.4% | 0.439 |
+| 70B/swiss_context | 55.6% [50.2%, 60.9%] | 38.9% [33.8%, 44.3%] | 5.5% | 58.8% | 0.572 |
+| 8B/as_asked | 38.0% [32.9%, 43.3%] | 46.2% [40.9%, 51.6%] | 15.8% | 45.1% | 0.413 |
+| 70B/as_asked | 46.2% [40.9%, 51.6%] | 44.1% [38.8%, 49.5%] | 9.7% | 51.2% | 0.486 |
+
+In brackets: 95% Wilson interval over the items.
 
 Both models answer wrongly far more often than they decline: with the country stated, the 70B model is wrong on 39% of the items and declines 5%; the 8B model is wrong on 48%. For a newcomer, a confident wrong deadline is worse than "I don't know".
 
@@ -106,12 +108,14 @@ By item kind (country stated):
 
 | model/condition | kind | n | correct | incorrect | not attempted |
 |---|---|---|---|---|---|
-| 8B/swiss_context | cantonal | 23 | 91.3% | 8.7% | 0.0% |
-| 8B/swiss_context | fact | 329 | 41.6% | 48.0% | 10.3% |
-| 8B/swiss_context | false_premise | 29 | 10.3% | 86.2% | 3.4% |
-| 70B/swiss_context | cantonal | 23 | 95.7% | 4.3% | 0.0% |
-| 70B/swiss_context | fact | 329 | 55.6% | 38.9% | 5.5% |
-| 70B/swiss_context | false_premise | 29 | 20.7% | 75.9% | 3.4% |
+| 8B/swiss_context | cantonal | 23 | 91.3% [73.2%, 97.6%] | 8.7% [2.4%, 26.8%] | 0.0% |
+| 8B/swiss_context | fact | 329 | 41.6% [36.4%, 47.0%] | 48.0% [42.7%, 53.4%] | 10.3% |
+| 8B/swiss_context | false_premise | 29 | 10.3% [3.6%, 26.4%] | 86.2% [69.4%, 94.5%] | 3.4% |
+| 70B/swiss_context | cantonal | 23 | 95.7% [79.0%, 99.2%] | 4.3% [0.8%, 21.0%] | 0.0% |
+| 70B/swiss_context | fact | 329 | 55.6% [50.2%, 60.9%] | 38.9% [33.8%, 44.3%] | 5.5% |
+| 70B/swiss_context | false_premise | 29 | 20.7% [9.8%, 38.4%] | 75.9% [57.9%, 87.8%] | 3.4% |
+
+The edge-case sets are small, so their intervals are wide: their direction, not the exact percentage, is the finding.
 
 The two kinds of edge case split sharply. When a rule depends on the canton, the 70B model says so in 96% of the items, but this is partly a habit: it also says a rule differs by canton in 30% of its replies to regular facts, which are national. When the question rests on a false premise, it rejects the premise in only 21% and goes along with it in 76% (8B: 86%): a newcomer who already believes a wrong deadline or amount is likely to have it confirmed.
 

@@ -4,7 +4,7 @@ from newcomer_qa import build
 from newcomer_qa.evaluate import Response, gold_target, parse_grade
 from newcomer_qa.config import Settings
 from newcomer_qa.human import agreement, cohen_kappa, sample
-from newcomer_qa.score import ScoresMismatchError, scores, write_scores
+from newcomer_qa.score import ScoresMismatchError, scores, wilson_interval, write_scores
 
 
 @pytest.mark.parametrize(("output", "grade"), [("A", "correct"), ("B", "incorrect"), (" C\n", "not_attempted"), ("none", None)])
@@ -59,3 +59,11 @@ def test_agreement_compares_the_judge_and_every_reference_grader(tmp_path):
     result = agreement(settings, rows)
     assert result["judge vs a"]["agreement"] == 0.5
     assert result["a vs b"]["n"] == 1
+
+
+def test_the_wilson_interval_contains_the_share_and_stays_within_zero_and_one():
+    low, high = wilson_interval(0.5, 100)
+    assert low < 0.5 < high
+    assert high - low == pytest.approx(0.192, abs=0.001)
+    assert wilson_interval(0.0, 29)[0] == pytest.approx(0.0, abs=1e-12)
+    assert wilson_interval(1.0, 29)[1] == pytest.approx(1.0, abs=1e-12)

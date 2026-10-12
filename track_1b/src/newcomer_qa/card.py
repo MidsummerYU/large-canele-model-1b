@@ -8,6 +8,7 @@ from newcomer_qa.config import Settings
 from newcomer_qa.consensus import fleiss_kappa
 from newcomer_qa.edge import EDGE_KINDS, EDGE_PREFIX, FACT_KIND
 from newcomer_qa.evaluate import EvalConfig, load_test_cases
+from newcomer_qa.score import CONFIDENCE
 
 
 def _jsonl(path: Path, model):
@@ -37,13 +38,18 @@ def _kind_composition(cases: list[TestCase], kinds: dict[str, str]) -> str:
     return _table(["kind", *languages, "all"], rows)
 
 
+def _with_interval(share: float, interval: list[float]) -> str:
+    return f"{share:.1%} [{interval[0]:.1%}, {interval[1]:.1%}]"
+
+
 def _kind_results(scores: dict, key: str, condition: str) -> str:
     rows = []
     for name, by_field in scores[key].items():
         if not name.endswith(f"/{condition}"):
             continue
         for kind, s in scores["kind_scores"][name]["kind"].items():
-            rows.append([name, kind, s["n"], f"{s['correct']:.1%}", f"{s['incorrect']:.1%}", f"{s['not_attempted']:.1%}"])
+            rows.append([name, kind, s["n"], _with_interval(s["correct"], s["correct_interval"]),
+                         _with_interval(s["incorrect"], s["incorrect_interval"]), f"{s['not_attempted']:.1%}"])
     return _table(["model/condition", "kind", "n", "correct", "incorrect", "not attempted"], rows)
 
 
@@ -51,8 +57,8 @@ def _results(scores: dict, key: str) -> str:
     rows = []
     for name, by_field in scores[key].items():
         s = by_field["all"]["all"]
-        rows.append([name, f"{s['correct']:.1%}", f"{s['incorrect']:.1%}", f"{s['not_attempted']:.1%}",
-                     f"{s['accuracy_given_attempted']:.1%}", f"{s['f1']:.3f}"])
+        rows.append([name, _with_interval(s["correct"], s["correct_interval"]), _with_interval(s["incorrect"], s["incorrect_interval"]),
+                     f"{s['not_attempted']:.1%}", f"{s['accuracy_given_attempted']:.1%}", f"{s['f1']:.3f}"])
     return _table(["model/condition", "correct", "incorrect", "not attempted", "correct given attempted", "F1"], rows)
 
 
@@ -114,6 +120,7 @@ def card_context(settings: Settings) -> dict:
         "config": config,
         "primary": scores["primary_grader"],
         "results": _results(scores, "scores"),
+        "confidence": CONFIDENCE,
         "kind_results": _kind_results(scores, "scores", config.main_condition),
         "judge_results": _results(scores, "judge_scores"),
         "agreement": _agreement(scores),
