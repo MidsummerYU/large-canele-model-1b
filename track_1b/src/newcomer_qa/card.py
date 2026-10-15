@@ -126,6 +126,7 @@ def card_context(settings: Settings) -> dict:
         "agreement": _agreement(scores),
         "a": scores["grader_agreement"],
         "hf_repo": settings.hf_repo,
+        "git_repo": settings.git_repo,
         "s": scores["scores"],
         "k": scores["kind_scores"],
         "j": scores["judge_scores"],

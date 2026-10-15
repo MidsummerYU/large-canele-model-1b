@@ -32,7 +32,7 @@ their SimpleQA grades.
 - **Shared by:** Large Canelé Model
 - **Language(s) (NLP):** German (de), French (fr), Italian (it), English (en)
 - **License:** CDLA-Permissive-2.0 for the questions, answers, metadata, model responses and grades
-- **Git repository:** https://github.com/MidsummerYU/large-canele-model-apertus-1b (code to rebuild the dataset
+- **Git repository:** https://github.com/MidsummerYU/large-canele-model-1b (code to rebuild the dataset
   and rerun the evaluation)
 
 ## Uses
@@ -290,7 +290,7 @@ one that answers wrongly. Treat the results as a snapshot of the rules on the fe
   author = {Large Canelé Model},
   year   = {2026},
   note   = {Hack Apertus 2026, Track 1B},
-  url    = {https://github.com/MidsummerYU/large-canele-model-apertus-1b}
+  url    = {https://github.com/MidsummerYU/large-canele-model-1b}
 }
 ```
 
