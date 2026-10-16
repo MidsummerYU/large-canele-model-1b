@@ -11,6 +11,7 @@ from newcomer_qa.evaluate import Grade, Response
 
 
 CONFIDENCE = 0.95
+INTERVAL_DIGITS = 6
 
 
 def wilson_interval(share: float, n: int, confidence: float = CONFIDENCE) -> tuple[float, float]:
@@ -18,7 +19,8 @@ def wilson_interval(share: float, n: int, confidence: float = CONFIDENCE) -> tup
     z = NormalDist().inv_cdf((1 + confidence) / 2)
     centre = (share + z * z / (2 * n)) / (1 + z * z / n)
     half = z / (1 + z * z / n) * math.sqrt(share * (1 - share) / n + z * z / (4 * n * n))
-    return centre - half, centre + half
+    # Rounded so that macOS and Linux libm, which differ in the last digits, give the same scores.json.
+    return round(centre - half, INTERVAL_DIGITS), round(centre + half, INTERVAL_DIGITS)
 
 
 class Scores(BaseModel):
