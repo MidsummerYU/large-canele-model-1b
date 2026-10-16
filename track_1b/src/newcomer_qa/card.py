@@ -34,7 +34,7 @@ def _kind_composition(cases: list[TestCase], kinds: dict[str, str]) -> str:
     languages = sorted({c.lang for c in cases})
     counts = Counter((kinds[c.item_id], c.lang) for c in cases)
     rows = [[kind, *(counts[kind, lang] for lang in languages), sum(counts[kind, lang] for lang in languages)]
-            for kind in sorted({*kinds.values()}, key=lambda k: k != FACT_KIND)]
+            for kind in sorted({*kinds.values()}, key=lambda k: (k != FACT_KIND, k))]
     return _table(["kind", *languages, "all"], rows)
 
 

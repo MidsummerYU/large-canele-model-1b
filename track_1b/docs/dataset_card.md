@@ -84,8 +84,8 @@ By item kind:
 | kind | de | en | fr | it | all |
 |---|---|---|---|---|---|
 | fact | 82 | 84 | 80 | 83 | 329 |
-| false_premise | 7 | 7 | 8 | 7 | 29 |
 | cantonal | 8 | 6 | 2 | 7 | 23 |
+| false_premise | 7 | 7 | 8 | 7 | 29 |
 
 - **fact** (329): one short answer that holds everywhere in Switzerland.
 - **cantonal** (23): asked as if there were one national answer, but the cited page says it depends on

@@ -41,8 +41,8 @@ Each regular item is a single-turn question with one short factual answer (deadl
 | kind | de | en | fr | it | all |
 |---|---|---|---|---|---|
 | fact | 82 | 84 | 80 | 83 | 329 |
-| false_premise | 7 | 7 | 8 | 7 | 29 |
 | cantonal | 8 | 6 | 2 | 7 | 23 |
+| false_premise | 7 | 7 | 8 | 7 | 29 |
 
 *cantonal* items ask as if there were one national rule where the page says it depends on the canton or commune; *false_premise* items take a wrong deadline, amount or obligation for granted, and the reference answer corrects it.
 
